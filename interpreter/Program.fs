@@ -3,14 +3,33 @@
 let isBlank c = Char.IsWhiteSpace c
 let isDigit c = Char.IsDigit c
     
-type Token = Plus | Multiply | LeftBracket | RightBracket | Number
+type Token = Plus | Multiply | Subtract | Divide | LeftBracket | RightBracket | Number of int
 
-let rec makeTokens (characters: char list) (tokenList: Token list) =
+
+let rec makeIntegerToken (characters: char list) (integer: int) =
+    match characters with
+    | '0' :: rest -> makeIntegerToken rest integer * 10
+    | '1' :: rest -> makeIntegerToken rest integer * 10 + 1
+    | '2' :: rest -> makeIntegerToken rest integer * 10 + 2
+    | '3' :: rest -> makeIntegerToken rest integer * 10 + 3
+    | '4' :: rest -> makeIntegerToken rest integer * 10 + 4
+    | '5' :: rest -> makeIntegerToken rest integer * 10 + 5
+    | '6' :: rest -> makeIntegerToken rest integer * 10 + 6
+    | '7' :: rest -> makeIntegerToken rest integer * 10 + 7
+    | '8' :: rest -> makeIntegerToken rest integer * 10 + 8
+    | '9' :: rest -> makeIntegerToken rest integer * 10 + 9
+    | [] -> ([], integer)
+    | all -> (characters, integer)
+    
+
+let rec makeTokens (characters: char list) (tokenList: Token list): Token list =
     match characters with
     | '+' :: rest -> makeTokens rest (Token.Plus :: tokenList)
     | '*' :: rest -> makeTokens rest (Token.Multiply :: tokenList)
     | '(' :: rest -> makeTokens rest (Token.LeftBracket :: tokenList)
     | ')' :: rest -> makeTokens rest (Token.RightBracket :: tokenList)
+    | '-' :: rest -> makeTokens rest (Token.Subtract :: tokenList)
+    | '/' :: rest -> makeTokens rest (Token.Divide :: tokenList)
     | whitespace :: rest when isBlank whitespace -> makeTokens rest tokenList
     | [] -> List.rev(tokenList)
     | err -> failwith "tokenization error"
