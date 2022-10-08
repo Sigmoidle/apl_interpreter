@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "interpreter", "interpreter\interpreter.fsproj", "{03CA5C24-4A04-459E-89C9-31366FC398E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03CA5C24-4A04-459E-89C9-31366FC398E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03CA5C24-4A04-459E-89C9-31366FC398E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03CA5C24-4A04-459E-89C9-31366FC398E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03CA5C24-4A04-459E-89C9-31366FC398E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
