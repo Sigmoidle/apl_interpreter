@@ -3,23 +3,31 @@
 let isBlank c = Char.IsWhiteSpace c
 let isDigit c = Char.IsDigit c
     
-type Token = Plus | Multiply | Subtract | Divide | LeftBracket | RightBracket | Number of int
+type Token =
+    Plus
+    | Multiply
+    | Subtract
+    | Divide
+    | LeftBracket
+    | RightBracket
+    | For
+    | Integer of int
 
 
 let rec makeIntegerToken (characters: char list) (integer: int) =
     match characters with
-    | '0' :: rest -> makeIntegerToken rest integer * 10
-    | '1' :: rest -> makeIntegerToken rest integer * 10 + 1
-    | '2' :: rest -> makeIntegerToken rest integer * 10 + 2
-    | '3' :: rest -> makeIntegerToken rest integer * 10 + 3
-    | '4' :: rest -> makeIntegerToken rest integer * 10 + 4
-    | '5' :: rest -> makeIntegerToken rest integer * 10 + 5
-    | '6' :: rest -> makeIntegerToken rest integer * 10 + 6
-    | '7' :: rest -> makeIntegerToken rest integer * 10 + 7
-    | '8' :: rest -> makeIntegerToken rest integer * 10 + 8
-    | '9' :: rest -> makeIntegerToken rest integer * 10 + 9
+    | '0' :: rest -> makeIntegerToken rest (integer * 10)
+    | '1' :: rest -> makeIntegerToken rest (integer * 10 + 1)
+    | '2' :: rest -> makeIntegerToken rest (integer * 10 + 2)
+    | '3' :: rest -> makeIntegerToken rest (integer * 10 + 3)
+    | '4' :: rest -> makeIntegerToken rest (integer * 10 + 4)
+    | '5' :: rest -> makeIntegerToken rest (integer * 10 + 5)
+    | '6' :: rest -> makeIntegerToken rest (integer * 10 + 6)
+    | '7' :: rest -> makeIntegerToken rest (integer * 10 + 7)
+    | '8' :: rest -> makeIntegerToken rest (integer * 10 + 8)
+    | '9' :: rest -> makeIntegerToken rest (integer * 10 + 9)
     | [] -> ([], integer)
-    | all -> (characters, integer)
+    | _ -> (characters, integer)
     
 
 let rec makeTokens (characters: char list) (tokenList: Token list): Token list =
@@ -30,6 +38,7 @@ let rec makeTokens (characters: char list) (tokenList: Token list): Token list =
     | ')' :: rest -> makeTokens rest (Token.RightBracket :: tokenList)
     | '-' :: rest -> makeTokens rest (Token.Subtract :: tokenList)
     | '/' :: rest -> makeTokens rest (Token.Divide :: tokenList)
+    | 'f' :: 'o' :: 'r' :: rest -> makeTokens rest (Token.For :: tokenList)
     | whitespace :: rest when isBlank whitespace -> makeTokens rest tokenList
     | [] -> List.rev(tokenList)
     | err -> failwith "tokenization error"

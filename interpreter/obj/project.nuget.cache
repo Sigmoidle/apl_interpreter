@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8D7yP59uZ+7hSxWKpRYr7+h0TrkW5ofVXyLOcjw8K1Ls/KiyNwVV9NXUPjz5Np2dhJTO7dGeSaeNwTIRDhgQdg==",
+  "dgSpecHash": "0EPaHOGvELNza0g/yv/AR5tuYT8y0bNfYYaWRkS+0QTbvi1Y4zH1jpmcqJO6ULK4dxyfB0onjAaw6FDms5IljQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\learning\\interpriter\\interpreter\\interpreter.fsproj",
+  "projectFilePath": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\learning\\compiler_learning\\interpreter\\interpreter.fsproj",
   "expectedPackageFiles": [
     "C:\\Users\\benjo\\.nuget\\packages\\fsharp.core\\6.0.6\\fsharp.core.6.0.6.nupkg.sha512"
   ],
