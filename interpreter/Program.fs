@@ -11,6 +11,7 @@ type Token =
     | LeftBracket
     | RightBracket
     | For
+    | While
     | Integer of int
 
 
@@ -39,6 +40,9 @@ let rec makeTokens (characters: char list) (tokenList: Token list): Token list =
     | '-' :: rest -> makeTokens rest (Token.Subtract :: tokenList)
     | '/' :: rest -> makeTokens rest (Token.Divide :: tokenList)
     | 'f' :: 'o' :: 'r' :: rest -> makeTokens rest (Token.For :: tokenList)
+    | 'w' :: 'h' :: 'i' :: 'l' :: 'e' :: rest -> makeTokens rest (Token.While :: tokenList)
+    | digit :: _ when isDigit digit -> let rest, integer = makeIntegerToken characters 0
+                                       makeTokens rest (Token.Integer(integer) :: tokenList)
     | whitespace :: rest when isBlank whitespace -> makeTokens rest tokenList
     | [] -> List.rev(tokenList)
     | err -> failwith "tokenization error"
