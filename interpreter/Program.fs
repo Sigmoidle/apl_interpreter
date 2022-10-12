@@ -7,69 +7,99 @@ let isDigit c = Char.IsDigit c
 // This is because the context of the position of the token defines
 // What role the token takes in APL
 type Token =
-    | Plus
-    | Hyphen
-    | Multiplication
-    | Division
-    | LeftCeiling
-    | LeftFloor
-    | Asterisk
-    | APLFunctionalSymbolCircleStar
-    | VerticalBar
-    | QuestionMark
-    | WhiteCircle
-    | ExclamationMark
-    | Tilde
-    | LogicalAnd
-    | LogicalOr
-    | APLFunctionalSymbolUpCaretTilde
-    | APLFunctionalSymbolDownCaretTilde
-    | LessThan
+    | Plus // +
+    | Hyphen // -
+    | Multiplication // ×
+    | Division // ÷
+    | LeftCeiling // ⌈
+    | LeftFloor // ⌊
+    | Asterisk // *
+    | CircleStar // ⍟
+    | VerticalBar // |
+    | QuestionMark // ?
+    | WhiteCircle // ○
+    | ExclamationMark // !
+    | Tilde // ~
+    | LogicalAnd // ∧
+    | LogicalOr // ∨
+    | UpCaretTilde // ⍲
+    | DownCaretTilde // ⍱
+    | LessThan // <
+    | NotGreaterThan // ≤
+    | Equals // =
+    | NotLessThan // ≥
+    | GreaterThan // >
+    | NotEqual // ≠
+    | Rho // ⍴
+    | Comma // ,
+    | LeftSquareBracket // [
+    | RightSquareBracket // ]
+    | Iota // ⍳
+    | UpwardPointingArrow // ↑
+    | DownwardPointingArrow // ↓
+    | DeltaStile // ⍋
+    | DelStile // ⍒
+    | Slash // /
+    | SlashBar // ⌿
+    | Backslash // \
+    | BackslashBar // ⍀
+    | CircleStile // ⌽
+    | CircledMinus // ⊖
+    | CircleBackslash // ⍉
+    | SmallElementOf // ∊
+    | Decode // ⊥
+    | Encode // ⊤
+    | FullStop // .
+    | OuterProduct // ∘.
     | Number of float
     | String of string
 
 
-let rec makeNumberToken (characters: char list) (float: float) =
+let rec makeNumberToken float characters =
     match characters with
-    | '0' :: rest -> makeNumberToken rest (float * 10.0)
-    | '1' :: rest -> makeNumberToken rest (float * 10.0 + 1.0)
-    | '2' :: rest -> makeNumberToken rest (float * 10.0 + 2.0)
-    | '3' :: rest -> makeNumberToken rest (float * 10.0 + 3.0)
-    | '4' :: rest -> makeNumberToken rest (float * 10.0 + 4.0)
-    | '5' :: rest -> makeNumberToken rest (float * 10.0 + 5.0)
-    | '6' :: rest -> makeNumberToken rest (float * 10.0 + 6.0)
-    | '7' :: rest -> makeNumberToken rest (float * 10.0 + 7.0)
-    | '8' :: rest -> makeNumberToken rest (float * 10.0 + 8.0)
-    | '9' :: rest -> makeNumberToken rest (float * 10.0 + 9.0)
+    // Number characters
+    | '0' :: rest -> makeNumberToken (float * 10.0) rest
+    | '1' :: rest -> makeNumberToken (float * 10.0 + 1.0) rest
+    | '2' :: rest -> makeNumberToken (float * 10.0 + 2.0) rest
+    | '3' :: rest -> makeNumberToken (float * 10.0 + 3.0) rest
+    | '4' :: rest -> makeNumberToken (float * 10.0 + 4.0) rest
+    | '5' :: rest -> makeNumberToken (float * 10.0 + 5.0) rest
+    | '6' :: rest -> makeNumberToken (float * 10.0 + 6.0) rest
+    | '7' :: rest -> makeNumberToken (float * 10.0 + 7.0) rest
+    | '8' :: rest -> makeNumberToken (float * 10.0 + 8.0) rest
+    | '9' :: rest -> makeNumberToken (float * 10.0 + 9.0) rest
+    // Empty character array
     | [] -> ([], float)
+    // Finished finding numbers
     | _ -> (characters, float)
 
 
-let rec makeTokens (characters: char list) (tokenList: Token list) : Token list =
+let rec makeTokens tokenList characters =
     match characters with
-    | '+' :: rest -> makeTokens rest (Token.Plus :: tokenList)
+    // Tokens
+    | '+' :: rest -> makeTokens (Token.Plus :: tokenList) rest
+    // Numbers (And whitespaces)
     | whitespace :: '-' :: digit :: rest when isBlank whitespace && isDigit digit ->
         let newRest, number =
-            makeNumberToken (digit :: rest) 0
+            makeNumberToken 0 (digit :: rest)
 
-        makeTokens newRest (Token.Number(-number) :: tokenList)
-    | whitespace :: rest when isBlank whitespace -> makeTokens rest tokenList
+        makeTokens (Token.Number(-number) :: tokenList) newRest
+    | whitespace :: rest when isBlank whitespace -> makeTokens tokenList rest
     | '+' :: digit :: rest
     | digit :: rest when isDigit digit ->
         let newRest, number =
-            makeNumberToken (digit :: rest) 0
+            makeNumberToken 0 (digit :: rest)
 
-        makeTokens newRest (Token.Number(number) :: tokenList)
+        makeTokens (Token.Number(number) :: tokenList) newRest
+    // Empty character array
     | [] -> tokenList |> List.rev
+    // Error, no matches
     | _ -> failwith "tokenization error"
 
 let tokenize (inputString: string) =
-    let characters =
-        inputString.ToCharArray() |> List.ofArray
-
-    makeTokens characters []
+    inputString |> Seq.toList |> makeTokens []
 
 [<EntryPoint>]
-let main args =
+let main _ =
     Console.ReadLine() |> tokenize |> printfn "%A"
     0
