@@ -1,56 +1,99 @@
 ﻿open System
+open Microsoft.VisualBasic
 
 let isBlank c = Char.IsWhiteSpace c
 let isDigit c = Char.IsDigit c
 
-// The names of the tokens are based purely on their unicode names
-// This is because the context of the position of the token defines
-// What role the token takes in APL
-type Token =
+type MonadicOperatorToken =
+    | Reduction // /
+    | ReductionAllowAxis // ⌿
+    
+type DyadicOperatorToken =
+    | InnerProduct // .
+    | OuterProduct // ∘.
+
+type OperatorToken =
+    | AxisLeft // [
+    | AxisRight // ]
+
+// Dyadic Tokens refer to the the tokens which can have a "Dyadic"
+// Form, this means that the function can only, or is able to
+// Take two argument (from it's left and right hand side).
+// Depending on Monadic or Dyadic form, the function of the token changes
+type DyadicToken =
     | Plus // +
-    | Hyphen // -
-    | Multiplication // ×
-    | Division // ÷
-    | LeftCeiling // ⌈
-    | LeftFloor // ⌊
-    | Asterisk // *
-    | CircleStar // ⍟
-    | VerticalBar // |
-    | QuestionMark // ?
-    | WhiteCircle // ○
-    | ExclamationMark // !
-    | Tilde // ~
-    | LogicalAnd // ∧
-    | LogicalOr // ∨
-    | UpCaretTilde // ⍲
-    | DownCaretTilde // ⍱
-    | LessThan // <
-    | NotGreaterThan // ≤
-    | Equals // =
-    | NotLessThan // ≥
-    | GreaterThan // >
+    | Minus // -
+    | Times // ×
+    | Divide // ÷
+    | Maximum // ⌈
+    | Minimum // ⌊
+    | Power // *
+    | Logarithm // ⍟
+    | Residue // |
+    | Deal // ?
+    | Circular // ○
+    | BinomialCoefficient // !
+    | And // ∧
+    | Or // ∨
+    | Nand // ⍲
+    | Nor // ⍱
+    | Less // <
+    | NotGreater // ≤
+    | Equal // =
+    | NotLess // ≥
+    | Greater // >
     | NotEqual // ≠
-    | Rho // ⍴
-    | Comma // ,
-    | LeftSquareBracket // [
-    | RightSquareBracket // ]
-    | Iota // ⍳
-    | UpwardPointingArrow // ↑
-    | DownwardPointingArrow // ↓
-    | DeltaStile // ⍋
-    | DelStile // ⍒
-    | Slash // /
-    | SlashBar // ⌿
-    | Backslash // \
-    | BackslashBar // ⍀
-    | CircleStile // ⌽
-    | CircledMinus // ⊖
-    | CircleBackslash // ⍉
-    | SmallElementOf // ∊
+    | Reshape // ⍴
+    | Catenate // ,
+    | IndexingLeft // [
+    | IndexingRight // ]
+    | IndexOf // ⍳
+    | Take // ↑
+    | Drop // ↓
+    | Compress // /
+    | CompressAllowAxis // ⌿
+    | Expand // \
+    | ExpandAllowAxis // ⍀
+    | Rotate // ⌽
+    | RotateAllowAxis // ⊖
+    | Membership // ∊
     | Decode // ⊥
     | Encode // ⊤
-    | FullStop // .
-    | OuterProduct // ∘.
+
+// Monadic Tokens refer to the the tokens which can have a "monadic"
+// Form, this means that the function can only, or is able to
+// Take one argument (to it's right).
+// Depending on Monadic or Dyadic form, the function of the token changes
+type MonadicToken =
+    | Conjugate // +
+    | Negative // -
+    | Signum // ×
+    | Reciprocal // ÷
+    | Ceiling // ⌈
+    | Floor // ⌊
+    | Exponential // *
+    | NaturalLogarithm // ⍟
+    | Magnitude // |
+    | Roll // ?
+    | PiTimes // ○
+    | Factorial // !
+    | Not // ~
+    | Size // ⍴
+    | Ravel // ,
+    | IndexGenerator // ⍳
+    | GradeUp // ⍋
+    | GradeDown // ⍒
+    | Reverse // ⌽
+    | ReverseAllowAxis // ⊖
+
+// All apl Tokens
+type Token =
+    | Operator of OperatorToken
+    | DyadicOperator of DyadicOperatorToken
+    | MonadicOperator of MonadicOperatorToken
+    | Dyadic of DyadicToken
+    | Monadic of MonadicToken
+    | Comment // ⍝
     | Number of float
     | String of string
 
@@ -77,7 +120,6 @@ let rec makeNumberToken float characters =
 let rec makeTokens tokenList characters =
     match characters with
     // Tokens
-    | '+' :: rest -> makeTokens (Token.Plus :: tokenList) rest
     // Numbers (And whitespaces)
     | whitespace :: '-' :: digit :: rest when isBlank whitespace && isDigit digit ->
         let newRest, number =
