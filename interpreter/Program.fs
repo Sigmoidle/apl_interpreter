@@ -1,5 +1,4 @@
 ﻿open System
-open Microsoft.VisualBasic
 
 let isBlank c = Char.IsWhiteSpace c
 let isDigit c = Char.IsDigit c
@@ -7,7 +6,7 @@ let isDigit c = Char.IsDigit c
 type MonadicOperatorToken =
     | Reduction // /
     | ReductionAllowAxis // ⌿
-    
+
 type DyadicOperatorToken =
     | InnerProduct // .
     | OuterProduct // ∘.
@@ -97,6 +96,23 @@ type Token =
     | Number of float
     | String of string
 
+let rec calculateAfterDecimal float scale characters =
+    match characters with
+    | '0' :: rest -> calculateAfterDecimal (float * 10.0) (scale * 10.0) rest
+    | '1' :: rest -> calculateAfterDecimal (float * 10.0 + 1.0) (scale * 10.0) rest
+    | '2' :: rest -> calculateAfterDecimal (float * 10.0 + 2.0) (scale * 10.0) rest
+    | '3' :: rest -> calculateAfterDecimal (float * 10.0 + 3.0) (scale * 10.0) rest
+    | '4' :: rest -> calculateAfterDecimal (float * 10.0 + 4.0) (scale * 10.0) rest
+    | '5' :: rest -> calculateAfterDecimal (float * 10.0 + 5.0) (scale * 10.0) rest
+    | '6' :: rest -> calculateAfterDecimal (float * 10.0 + 6.0) (scale * 10.0) rest
+    | '7' :: rest -> calculateAfterDecimal (float * 10.0 + 7.0) (scale * 10.0) rest
+    | '8' :: rest -> calculateAfterDecimal (float * 10.0 + 8.0) (scale * 10.0) rest
+    | '9' :: rest -> calculateAfterDecimal (float * 10.0 + 9.0) (scale * 10.0) rest
+    // Empty character array
+    | [] -> ([], float / scale)
+    // Finished finding numbers
+    | _ -> (characters, float / scale)
+
 
 let rec makeNumberToken float characters =
     match characters with
@@ -111,10 +127,17 @@ let rec makeNumberToken float characters =
     | '7' :: rest -> makeNumberToken (float * 10.0 + 7.0) rest
     | '8' :: rest -> makeNumberToken (float * 10.0 + 8.0) rest
     | '9' :: rest -> makeNumberToken (float * 10.0 + 9.0) rest
+    // Detect and calculate float number
+    | '.' :: digit :: rest when isDigit digit ->
+        let newRest, number =
+            calculateAfterDecimal 0 1 (digit :: rest)
+
+        makeNumberToken (float + number) newRest
     // Empty character array
     | [] -> ([], float)
     // Finished finding numbers
     | _ -> (characters, float)
+
 
 
 let rec makeTokens tokenList characters =
@@ -127,7 +150,6 @@ let rec makeTokens tokenList characters =
 
         makeTokens (Token.Number(-number) :: tokenList) newRest
     | whitespace :: rest when isBlank whitespace -> makeTokens tokenList rest
-    | '+' :: digit :: rest
     | digit :: rest when isDigit digit ->
         let newRest, number =
             makeNumberToken 0 (digit :: rest)
@@ -143,5 +165,10 @@ let tokenize (inputString: string) =
 
 [<EntryPoint>]
 let main _ =
-    Console.ReadLine() |> tokenize |> printfn "%A"
+    let testString =
+        "10.15\n\
+         -10.8\n\
+         10.1\n"
+
+    testString |> tokenize |> printfn "%A"
     0
