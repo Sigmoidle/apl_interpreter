@@ -1,15 +1,23 @@
 ﻿open System
 
-let isBlank c = Char.IsWhiteSpace c
+let isNewLine c = c = '\n'
+
+let isLetter c = Char.IsLetter c
+
+let isBlank c =
+    Char.IsWhiteSpace c && not (c.Equals('\n'))
+
 let isDigit c = Char.IsDigit c
 
 type MonadicOperatorToken =
     | Reduction // /
     | ReductionAllowAxis // ⌿
+    | Branch // →
 
 type DyadicOperatorToken =
     | InnerProduct // .
     | OuterProduct // ∘.
+    | Assign // ←
 
 type OperatorToken =
     | AxisLeft // [
@@ -138,27 +146,48 @@ let rec makeNumberToken float characters =
     // Finished finding numbers
     | _ -> (characters, float)
 
+let rec handleComment characters =
+    match characters with
+    | newline :: rest when isNewLine newline -> rest
+    | [] -> characters
+    | _ :: rest -> handleComment rest
 
+let rec makeStringToken (calculatedString: string) characters =
+    match characters with
+    | letter :: rest when isLetter letter -> makeStringToken (calculatedString + string letter) rest
+    | [] -> ([], calculatedString)
+    | _ -> (characters, calculatedString)
 
 let rec makeTokens tokenList characters =
     match characters with
     // Tokens
-    // Numbers (And whitespaces)
-    | whitespace :: '-' :: digit :: rest when isBlank whitespace && isDigit digit ->
+    // Strings
+    | letter :: rest when isLetter letter ->
+        let newRest, calculatedString =
+            makeStringToken "" (letter :: rest)
+
+        makeTokens (Token.String(calculatedString) :: tokenList) newRest
+    // Numbers
+    | '¯' :: digit :: rest when isDigit digit ->
         let newRest, number =
             makeNumberToken 0 (digit :: rest)
 
         makeTokens (Token.Number(-number) :: tokenList) newRest
-    | whitespace :: rest when isBlank whitespace -> makeTokens tokenList rest
     | digit :: rest when isDigit digit ->
         let newRest, number =
             makeNumberToken 0 (digit :: rest)
 
         makeTokens (Token.Number(number) :: tokenList) newRest
+    // Whitespaces
+    | whitespace :: rest when isBlank whitespace || isNewLine whitespace -> makeTokens tokenList rest
+    // Comments
+    | '⍝' :: rest ->
+        let newRest = handleComment rest
+        makeTokens tokenList newRest
     // Empty character array
     | [] -> tokenList |> List.rev
     // Error, no matches
-    | _ -> failwith "tokenization error"
+    | error :: _ -> failwith $"tokenization error at character: {error}"
 
 let tokenize (inputString: string) =
     inputString |> Seq.toList |> makeTokens []
@@ -166,9 +195,10 @@ let tokenize (inputString: string) =
 [<EntryPoint>]
 let main _ =
     let testString =
-        "10.15\n\
-         -10.8\n\
-         10.1\n"
+        "10.15 ⍝ this is a comment\n\
+         TheString ¯10.8\n\
+         10 anotherString\n\
+         ⍝ this is another comment!"
 
     testString |> tokenize |> printfn "%A"
     0
