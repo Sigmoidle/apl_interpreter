@@ -22,6 +22,8 @@ type DyadicOperatorToken =
 type OperatorToken =
     | AxisLeft // [
     | AxisRight // ]
+    | LeftBracket // (
+    | RightBracket // )
 
 // Dyadic Tokens refer to the the tokens which can have a "Dyadic"
 // Form, this means that the function can only, or is able to
@@ -101,8 +103,16 @@ type Token =
     | Dyadic of DyadicToken
     | Monadic of MonadicToken
     | Comment // ⍝
+    | NewLine // \n
     | Number of float
     | String of string
+    | Identifier of string
+
+let isIndicationOfArray t =
+    match t with
+    | Token.Identifier _ -> true
+    | Token.Operator OperatorToken.RightBracket -> true
+    | _ -> false
 
 let rec calculateAfterDecimal float scale characters =
     match characters with
@@ -161,12 +171,27 @@ let rec makeStringToken (calculatedString: string) characters =
 let rec makeTokens tokenList characters =
     match characters with
     // Tokens
-    // Strings
+    // DyadicOperatorTokens
+    | '←' :: rest ->
+        makeTokens
+            ((DyadicOperatorToken.Assign |> Token.DyadicOperator)
+             :: tokenList)
+            rest
+    // DyadicTokens
+    | '+' :: rest when isIndicationOfArray tokenList.Head ->
+        makeTokens ((DyadicToken.Plus |> Token.Dyadic) :: tokenList) rest
+    // MonadicTokens
+    | '+' :: rest when not <| isIndicationOfArray tokenList.Head ->
+        makeTokens
+            ((MonadicToken.Conjugate |> Token.Monadic)
+             :: tokenList)
+            rest
+    // Identifiers
     | letter :: rest when isLetter letter ->
         let newRest, calculatedString =
             makeStringToken "" (letter :: rest)
 
-        makeTokens (Token.String(calculatedString) :: tokenList) newRest
+        makeTokens (Token.Identifier(calculatedString) :: tokenList) newRest
     // Numbers
     | '¯' :: digit :: rest when isDigit digit ->
         let newRest, number =
@@ -179,7 +204,9 @@ let rec makeTokens tokenList characters =
 
         makeTokens (Token.Number(number) :: tokenList) newRest
     // Whitespaces
-    | whitespace :: rest when isBlank whitespace || isNewLine whitespace -> makeTokens tokenList rest
+    | whitespace :: rest when isBlank whitespace -> makeTokens tokenList rest
+    // NewLines
+    | newLine :: rest when isNewLine newLine -> makeTokens (Token.NewLine :: tokenList) rest
     // Comments
     | '⍝' :: rest ->
         let newRest = handleComment rest
@@ -195,10 +222,12 @@ let tokenize (inputString: string) =
 [<EntryPoint>]
 let main _ =
     let testString =
-        "10.15 ⍝ this is a comment\n\
-         TheString ¯10.8\n\
-         10 anotherString\n\
-         ⍝ this is another comment!"
+        "\n\
+        arrayA ← ¯10.15 ⍝ assign ¯10.15 to a\n\
+        arrayB ← 10 15.3 ¯16.7 ⍝ assign an array of three numbers to b\n\
+        +arrayA\n\
+        arrayA+arrayB\n
+        "
 
     testString |> tokenize |> printfn "%A"
     0
