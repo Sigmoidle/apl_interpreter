@@ -6,7 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Program.fs"/>
+        <Compile Include="Lexer.fs" />
+        <Content Include="test_program.apl" />
     </ItemGroup>
 
 </Project>

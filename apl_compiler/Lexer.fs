@@ -1,13 +1,5 @@
 ﻿open System
-
-let isNewLine c = c = '\n'
-
-let isLetter c = Char.IsLetter c
-
-let isBlank c =
-    Char.IsWhiteSpace c && not (c.Equals('\n'))
-
-let isDigit c = Char.IsDigit c
+open System.IO
 
 type MonadicOperatorToken =
     | Reduction // /
@@ -114,6 +106,14 @@ let isIndicationOfArray t =
     | Token.Operator OperatorToken.RightBracket -> true
     | _ -> false
 
+let isNewLine c = c = '\n'
+
+let isLetter c = Char.IsLetter c
+
+let isBlank c = Char.IsWhiteSpace c && not (c.Equals('\n'))
+
+let isDigit c = Char.IsDigit c
+
 let rec calculateAfterDecimal float scale characters =
     match characters with
     | '0' :: rest -> calculateAfterDecimal (float * 10.0) (scale * 10.0) rest
@@ -147,8 +147,7 @@ let rec makeNumberToken float characters =
     | '9' :: rest -> makeNumberToken (float * 10.0 + 9.0) rest
     // Detect and calculate float number
     | '.' :: digit :: rest when isDigit digit ->
-        let newRest, number =
-            calculateAfterDecimal 0 1 (digit :: rest)
+        let newRest, number = calculateAfterDecimal 0 1 (digit :: rest)
 
         makeNumberToken (float + number) newRest
     // Empty character array
@@ -172,35 +171,23 @@ let rec makeTokens tokenList characters =
     match characters with
     // Tokens
     // DyadicOperatorTokens
-    | '←' :: rest ->
-        makeTokens
-            ((DyadicOperatorToken.Assign |> Token.DyadicOperator)
-             :: tokenList)
-            rest
+    | '←' :: rest -> makeTokens (Token.DyadicOperator DyadicOperatorToken.Assign :: tokenList) rest
     // DyadicTokens
-    | '+' :: rest when isIndicationOfArray tokenList.Head ->
-        makeTokens ((DyadicToken.Plus |> Token.Dyadic) :: tokenList) rest
+    | '+' :: rest when isIndicationOfArray tokenList.Head -> makeTokens (Token.Dyadic DyadicToken.Plus :: tokenList) rest
     // MonadicTokens
-    | '+' :: rest when not <| isIndicationOfArray tokenList.Head ->
-        makeTokens
-            ((MonadicToken.Conjugate |> Token.Monadic)
-             :: tokenList)
-            rest
+    | '+' :: rest when not <| isIndicationOfArray tokenList.Head -> makeTokens (Token.Monadic MonadicToken.Conjugate :: tokenList) rest
     // Identifiers
     | letter :: rest when isLetter letter ->
-        let newRest, calculatedString =
-            makeStringToken "" (letter :: rest)
+        let newRest, calculatedString = makeStringToken "" (letter :: rest)
 
         makeTokens (Token.Identifier(calculatedString) :: tokenList) newRest
     // Numbers
     | '¯' :: digit :: rest when isDigit digit ->
-        let newRest, number =
-            makeNumberToken 0 (digit :: rest)
+        let newRest, number = makeNumberToken 0 (digit :: rest)
 
         makeTokens (Token.Number(-number) :: tokenList) newRest
     | digit :: rest when isDigit digit ->
-        let newRest, number =
-            makeNumberToken 0 (digit :: rest)
+        let newRest, number = makeNumberToken 0 (digit :: rest)
 
         makeTokens (Token.Number(number) :: tokenList) newRest
     // Whitespaces
@@ -210,24 +197,18 @@ let rec makeTokens tokenList characters =
     // Comments
     | '⍝' :: rest ->
         let newRest = handleComment rest
+
         makeTokens tokenList newRest
     // Empty character array
     | [] -> tokenList |> List.rev
     // Error, no matches
-    | error :: _ -> failwith $"tokenization error at character: {error}"
+    | error :: _ -> failwith $"tokenization error at character: {error} | After token: {tokenList.Head}"
 
-let tokenize (inputString: string) =
-    inputString |> Seq.toList |> makeTokens []
+let tokenize (inputString: string) = inputString |> Seq.toList |> makeTokens []
 
 [<EntryPoint>]
 let main _ =
-    let testString =
-        "\n\
-        arrayA ← ¯10.15 ⍝ assign ¯10.15 to a\n\
-        arrayB ← 10 15.3 ¯16.7 ⍝ assign an array of three numbers to b\n\
-        +arrayA\n\
-        arrayA+arrayB\n
-        "
+    let testString = File.ReadAllText("C:\Users\\benjo\OneDrive\Documents\university\\advanced programming\project\learning\compiler_learning\\apl_compiler\\test_program.apl")
 
     testString |> tokenize |> printfn "%A"
     0

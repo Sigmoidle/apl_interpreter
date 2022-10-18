@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "interpreter", "interpreter\interpreter.fsproj", "{03CA5C24-4A04-459E-89C9-31366FC398E4}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "apl_compiler", "apl_compiler\apl_compiler.fsproj", "{03CA5C24-4A04-459E-89C9-31366FC398E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
