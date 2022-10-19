@@ -1,28 +1,25 @@
-﻿open System
+﻿module Lexer
+
+open System
 open System.IO
 
-type MonadicOperatorToken =
+// All Apl tokens
+type Token =
+    // Monadic Operator Tokens
     | Reduction // /
     | ReductionAllowAxis // ⌿
     | Branch // →
-
-type DyadicOperatorToken =
+    // Dyadic Operator Tokens
     | InnerProduct // .
     | OuterProduct // ∘.
-    | Assign // ←
-
-type OperatorToken =
+    | Assign // ← implemented
+    // Operator Tokens
     | AxisLeft // [
     | AxisRight // ]
     | LeftBracket // (
     | RightBracket // )
-
-// Dyadic Tokens refer to the the tokens which can have a "Dyadic"
-// Form, this means that the function can only, or is able to
-// Take two argument (from it's left and right hand side).
-// Depending on Monadic or Dyadic form, the function of the token changes
-type DyadicToken =
-    | Plus // +
+    // Dyadic tokens
+    | Plus // + implemented
     | Minus // -
     | Times // ×
     | Divide // ÷
@@ -60,13 +57,8 @@ type DyadicToken =
     | Membership // ∊
     | Decode // ⊥
     | Encode // ⊤
-
-// Monadic Tokens refer to the the tokens which can have a "monadic"
-// Form, this means that the function can only, or is able to
-// Take one argument (to it's right).
-// Depending on Monadic or Dyadic form, the function of the token changes
-type MonadicToken =
-    | Conjugate // +
+    // Monadic Tokens
+    | Conjugate // + implemented
     | Negative // -
     | Signum // ×
     | Reciprocal // ÷
@@ -86,35 +78,30 @@ type MonadicToken =
     | GradeDown // ⍒
     | Reverse // ⌽
     | ReverseAllowAxis // ⊖
-
-// All apl Tokens
-type Token =
-    | Operator of OperatorToken
-    | DyadicOperator of DyadicOperatorToken
-    | MonadicOperator of MonadicOperatorToken
-    | Dyadic of DyadicToken
-    | Monadic of MonadicToken
-    | Comment // ⍝
-    | NewLine // \n
-    | Number of float
+    // Misc
+    | Comment // ⍝ implemented
+    | NewLine // \n implemented
+    // Types
+    | Number of float // implemented
     | String of string
-    | Identifier of string
+    // Identifiers
+    | Identifier of string // implemented
 
-let isIndicationOfArray t =
+let private isIndicationOfArray t =
     match t with
     | Token.Identifier _ -> true
-    | Token.Operator OperatorToken.RightBracket -> true
+    | Token.RightBracket -> true
     | _ -> false
 
-let isNewLine c = c = '\n'
+let private isNewLine c = c = '\n'
 
-let isLetter c = Char.IsLetter c
+let private isLetter c = Char.IsLetter c
 
-let isBlank c = Char.IsWhiteSpace c && not (c.Equals('\n'))
+let private isBlank c = Char.IsWhiteSpace c && not (c.Equals('\n'))
 
-let isDigit c = Char.IsDigit c
+let private isDigit c = Char.IsDigit c
 
-let rec calculateAfterDecimal float scale characters =
+let rec private calculateAfterDecimal float scale characters =
     match characters with
     | '0' :: rest -> calculateAfterDecimal (float * 10.0) (scale * 10.0) rest
     | '1' :: rest -> calculateAfterDecimal (float * 10.0 + 1.0) (scale * 10.0) rest
@@ -131,8 +118,7 @@ let rec calculateAfterDecimal float scale characters =
     // Finished finding numbers
     | _ -> (characters, float / scale)
 
-
-let rec makeNumberToken float characters =
+let rec private makeNumberToken float characters =
     match characters with
     // Number characters
     | '0' :: rest -> makeNumberToken (float * 10.0) rest
@@ -155,27 +141,27 @@ let rec makeNumberToken float characters =
     // Finished finding numbers
     | _ -> (characters, float)
 
-let rec handleComment characters =
+let rec private handleComment characters =
     match characters with
-    | newline :: rest when isNewLine newline -> rest
+    | newline :: rest when isNewLine newline -> newline :: rest
     | [] -> characters
     | _ :: rest -> handleComment rest
 
-let rec makeStringToken (calculatedString: string) characters =
+let rec private makeStringToken (calculatedString: string) characters =
     match characters with
     | letter :: rest when isLetter letter -> makeStringToken (calculatedString + string letter) rest
     | [] -> ([], calculatedString)
     | _ -> (characters, calculatedString)
 
-let rec makeTokens tokenList characters =
+let rec private makeTokens tokenList characters =
     match characters with
     // Tokens
     // DyadicOperatorTokens
-    | '←' :: rest -> makeTokens (Token.DyadicOperator DyadicOperatorToken.Assign :: tokenList) rest
+    | '←' :: rest -> makeTokens (Token.Assign :: tokenList) rest
     // DyadicTokens
-    | '+' :: rest when isIndicationOfArray tokenList.Head -> makeTokens (Token.Dyadic DyadicToken.Plus :: tokenList) rest
+    | '+' :: rest when isIndicationOfArray tokenList.Head -> makeTokens (Token.Plus :: tokenList) rest
     // MonadicTokens
-    | '+' :: rest when not <| isIndicationOfArray tokenList.Head -> makeTokens (Token.Monadic MonadicToken.Conjugate :: tokenList) rest
+    | '+' :: rest when not <| isIndicationOfArray tokenList.Head -> makeTokens (Token.Conjugate :: tokenList) rest
     // Identifiers
     | letter :: rest when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: rest)
@@ -204,11 +190,11 @@ let rec makeTokens tokenList characters =
     // Error, no matches
     | error :: _ -> failwith $"tokenization error at character: {error} | After token: {tokenList.Head}"
 
-let tokenize (inputString: string) = inputString |> Seq.toList |> makeTokens []
+let public lex (inputString: string) = inputString |> Seq.toList |> makeTokens []
 
 [<EntryPoint>]
-let main _ =
-    let testString = File.ReadAllText("C:\Users\\benjo\OneDrive\Documents\university\\advanced programming\project\learning\compiler_learning\\apl_compiler\\test_program.apl")
+let testLexer _ =
+    let aplProgram = File.ReadAllText("test_program.apl")
 
-    testString |> tokenize |> printfn "%A"
+    aplProgram |> lex |> printfn "%A"
     0

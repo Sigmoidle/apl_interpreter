@@ -7,7 +7,9 @@
 
     <ItemGroup>
         <Compile Include="Lexer.fs" />
-        <Content Include="test_program.apl" />
+        <Content Include="test_program.apl">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

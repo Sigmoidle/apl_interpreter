@@ -7,66 +7,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e986c7f6-6ab8-44ad-bf71-a54fd807c7fe" name="Changes" comment="Added '+' with dyadic and monadic forms. And added newLine token. The lexer is now ready for the next part of the first cycle. We should build the parser and c mappings now.">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.AssemblyInfo.fs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.AssemblyInfoInputs.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.assets.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.fsproj.AssemblyReference.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/apl_compiler.fsproj.nuget.dgspec.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/interpreter.fsproj.nuget.g.props" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/interpreter.fsproj.nuget.g.targets" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/project.packagespec.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/test_program.apl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/Program.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/Lexer.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/FSharp.Core.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/FSharp.Core.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/cs/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/cs/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/de/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/de/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/es/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/es/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/fr/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/fr/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/interpreter.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/interpreter.deps.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/interpreter.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/interpreter.exe" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/interpreter.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/interpreter.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/interpreter.runtimeconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/interpreter.runtimeconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/it/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/it/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/ja/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/ja/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/ko/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/ko/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/pl/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/pl/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/pt-BR/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/pt-BR/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/ru/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/ru/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/tr/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/tr/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/zh-Hans/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/zh-Hans/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/bin/Debug/net6.0/zh-Hant/FSharp.Core.resources.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/zh-Hant/FSharp.Core.resources.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/interpreter.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/apl_compiler.fsproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/.NETCoreApp,Version=v6.0.AssemblyAttributes.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/.NETCoreApp,Version=v6.0.AssemblyAttributes.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apphost.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.AssemblyInfo.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.AssemblyInfo.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.fsproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.fsproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.fsproj.CopyComplete" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.fsproj.CopyComplete" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.fsproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.fsproj.CoreCompileInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.fsproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.fsproj.FileListAbsolute.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.genruntimeconfig.cache" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.genruntimeconfig.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/Debug/net6.0/interpreter.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/interpreter.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/interpreter.fsproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/interpreter.fsproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/interpreter.fsproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/apl_compiler.fsproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/interpreter.fsproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/apl_compiler.fsproj.nuget.g.targets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/project.packagespec.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpreter/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/obj/rider.project.restore.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interpriter.sln" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler.sln" afterDir="false" />
+    <list default="true" id="e986c7f6-6ab8-44ad-bf71-a54fd807c7fe" name="Changes" comment="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed.">
+      <change afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.deps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.runtimeconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.fsproj.CoreCompileInputs.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.fsproj.FileListAbsolute.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.genruntimeconfig.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_compiler/Lexer.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/Lexer.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_compiler/apl_compiler.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/apl_compiler.fsproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_compiler/test_program.apl" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/test_program.apl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +97,7 @@
       <workItem from="1665417782909" duration="11056000" />
       <workItem from="1665569786464" duration="13391000" />
       <workItem from="1665827066724" duration="8341000" />
-      <workItem from="1666004244155" duration="7778000" />
+      <workItem from="1666004244155" duration="15470000" />
     </task>
     <task id="LOCAL-00001" summary="Started adding numbers to lexing, doesn't work yet">
       <created>1665251494074</created>
@@ -207,7 +162,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666011505213</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed.">
+      <created>1666103508321</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1666103508321</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,7 +200,8 @@
     <MESSAGE value="Added the lexing of minus numbers and floats!" />
     <MESSAGE value="lexing of strings is now implemented" />
     <MESSAGE value="Added '+' with dyadic and monadic forms. And added newLine token. The lexer is now ready for the next part of the first cycle. We should build the parser and c mappings now." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added '+' with dyadic and monadic forms. And added newLine token. The lexer is now ready for the next part of the first cycle. We should build the parser and c mappings now." />
+    <MESSAGE value="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed." />
+    <option name="LAST_COMMIT_MESSAGE" value="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
