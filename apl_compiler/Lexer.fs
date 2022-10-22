@@ -1,4 +1,4 @@
-﻿module Lexer
+﻿module apl_compiler.Lexer
 
 open System
 open System.IO
@@ -192,9 +192,8 @@ let rec private makeTokens tokenList characters =
 
 let public lex (inputString: string) = inputString |> Seq.toList |> makeTokens []
 
-[<EntryPoint>]
-let testLexer _ =
+
+let testLexer =
     let aplProgram = File.ReadAllText("test_program.apl")
 
     aplProgram |> lex |> printfn "%A"
-    0

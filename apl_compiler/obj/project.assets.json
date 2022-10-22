@@ -123,11 +123,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\learning\\compiler_learning\\apl_compiler\\apl_compiler.fsproj",
+      "projectUniqueName": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\parser_for_apl\\parser\\apl_compiler\\apl_compiler.fsproj",
       "projectName": "apl_compiler",
-      "projectPath": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\learning\\compiler_learning\\apl_compiler\\apl_compiler.fsproj",
+      "projectPath": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\parser_for_apl\\parser\\apl_compiler\\apl_compiler.fsproj",
       "packagesPath": "C:\\Users\\benjo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\learning\\compiler_learning\\apl_compiler\\obj\\",
+      "outputPath": "C:\\Users\\benjo\\OneDrive\\Documents\\university\\advanced programming\\project\\parser_for_apl\\parser\\apl_compiler\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
