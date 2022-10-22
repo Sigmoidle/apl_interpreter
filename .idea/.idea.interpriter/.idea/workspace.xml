@@ -7,22 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e986c7f6-6ab8-44ad-bf71-a54fd807c7fe" name="Changes" comment="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed.">
-      <change afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.deps.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.runtimeconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.fsproj.CoreCompileInputs.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.fsproj.FileListAbsolute.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.genruntimeconfig.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_compiler/obj/Debug/net6.0/apl_compiler.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.interpriter/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/Lexer.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/Lexer.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/apl_compiler.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/apl_compiler.fsproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.dll" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/bin/Debug/net6.0/apl_compiler.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/test_program.apl" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler/test_program.apl" afterDir="false" />
-    </list>
+    <list default="true" id="e986c7f6-6ab8-44ad-bf71-a54fd807c7fe" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -97,7 +82,7 @@
       <workItem from="1665417782909" duration="11056000" />
       <workItem from="1665569786464" duration="13391000" />
       <workItem from="1665827066724" duration="8341000" />
-      <workItem from="1666004244155" duration="15470000" />
+      <workItem from="1666004244155" duration="15523000" />
     </task>
     <task id="LOCAL-00001" summary="Started adding numbers to lexing, doesn't work yet">
       <created>1665251494074</created>
@@ -169,7 +154,21 @@
       <option name="project" value="LOCAL" />
       <updated>1666103508321</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Neatened up the lexer, ready to start work on the parser now">
+      <created>1666206247145</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1666206247145</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Apl file">
+      <created>1666206271159</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1666206271159</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,7 +200,9 @@
     <MESSAGE value="lexing of strings is now implemented" />
     <MESSAGE value="Added '+' with dyadic and monadic forms. And added newLine token. The lexer is now ready for the next part of the first cycle. We should build the parser and c mappings now." />
     <MESSAGE value="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed." />
-    <option name="LAST_COMMIT_MESSAGE" value="Slight update to file structure. And now the lexer can read an apl file. It's currently using an abolute path so this needs to be fixed." />
+    <MESSAGE value="Neatened up the lexer, ready to start work on the parser now" />
+    <MESSAGE value="Apl file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Apl file" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
