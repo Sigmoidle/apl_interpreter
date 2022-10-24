@@ -5,79 +5,53 @@ open System.IO
 
 // All Apl tokens
 type Token =
-    // Monadic Operator Tokens
-    | Reduction // /
-    | ReductionAllowAxis // ⌿
-    | Branch // →
-    // Dyadic Operator Tokens
-    | InnerProduct // .
-    | OuterProduct // ∘.
-    | Assign // ← implemented
-    // Operator Tokens
-    | AxisLeft // [
-    | AxisRight // ]
-    | LeftBracket // (
-    | RightBracket // )
-    // Dyadic tokens
-    | Plus // + implemented
-    | Minus // -
-    | Times // ×
-    | Divide // ÷
-    | Maximum // ⌈
-    | Minimum // ⌊
-    | Power // *
-    | Logarithm // ⍟
-    | Residue // |
-    | Deal // ?
-    | Circular // ○
-    | BinomialCoefficient // !
-    | And // ∧
-    | Or // ∨
-    | Nand // ⍲
-    | Nor // ⍱
-    | Less // <
-    | NotGreater // ≤
-    | Equal // =
-    | NotLess // ≥
-    | Greater // >
+    | Plus // +
+    | Hyphen // -
+    | Multiplication // ×
+    | Division // ÷
+    | LeftCeiling // ⌈
+    | LeftFloor // ⌊
+    | Asterisk // *
+    | CircleStar // ⍟
+    | VerticalBar // |
+    | QuestionMark // ?
+    | WhiteCircle // ○
+    | ExclamationMark // !
+    | Tilde // ~
+    | LogicalAnd // ∧
+    | LogicalOr // ∨
+    | UpCaretTilde // ⍲
+    | DownCaretTilde // ⍱
+    | LessThan // <
+    | NotGreaterThan // ≤
+    | Equals // =
+    | NotLessThan // ≥
+    | GreaterThan // >
     | NotEqual // ≠
-    | Reshape // ⍴
-    | Catenate // ,
-    | IndexingLeft // [
-    | IndexingRight // ]
-    | IndexOf // ⍳
-    | Take // ↑
-    | Drop // ↓
-    | Compress // /
-    | CompressAllowAxis // ⌿
-    | Expand // \
-    | ExpandAllowAxis // ⍀
-    | Rotate // ⌽
-    | RotateAllowAxis // ⊖
-    | Membership // ∊
+    | Rho // ⍴
+    | Comma // ,
+    | LeftSquareBracket // [
+    | RightSquareBracket // ]
+    | Iota // ⍳
+    | UpwardPointingArrow // ↑
+    | DownwardPointingArrow // ↓
+    | DeltaStile // ⍋
+    | DelStile // ⍒
+    | Slash // /
+    | SlashBar // ⌿
+    | Backslash // \
+    | BackslashBar // ⍀
+    | CircleStile // ⌽
+    | CircledMinus // ⊖
+    | CircleBackslash // ⍉
+    | SmallElementOf // ∊
     | Decode // ⊥
     | Encode // ⊤
-    // Monadic Tokens
-    | Conjugate // + implemented
-    | Negative // -
-    | Signum // ×
-    | Reciprocal // ÷
-    | Ceiling // ⌈
-    | Floor // ⌊
-    | Exponential // *
-    | NaturalLogarithm // ⍟
-    | Magnitude // |
-    | Roll // ?
-    | PiTimes // ○
-    | Factorial // !
-    | Not // ~
-    | Size // ⍴
-    | Ravel // ,
-    | IndexGenerator // ⍳
-    | GradeUp // ⍋
-    | GradeDown // ⍒
-    | Reverse // ⌽
-    | ReverseAllowAxis // ⊖
+    | FullStop // .
+    | OuterProduct // ∘.
+    | LeftBracket // (
+    | RightBracket // )
+    | Assign // ←
     // Misc
     | Comment // ⍝ implemented
     | NewLine // \n implemented
@@ -104,12 +78,8 @@ let private isDigit c = Char.IsDigit c
 let rec private makeTokens tokenList characters =
     match characters with
     // Tokens
-    // DyadicOperatorTokens
     | '←' :: rest -> makeTokens (Assign :: tokenList) rest
-    // DyadicTokens
-    | '+' :: rest when isIndicationOfArray tokenList.Head -> makeTokens (Plus :: tokenList) rest
-    // MonadicTokens
-    | '+' :: rest when not <| isIndicationOfArray tokenList.Head -> makeTokens (Conjugate :: tokenList) rest
+    | '+' :: rest -> makeTokens (Plus :: tokenList) rest
     // Identifiers
     | letter :: rest when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: rest)

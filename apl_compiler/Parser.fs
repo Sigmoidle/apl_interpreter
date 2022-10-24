@@ -4,22 +4,30 @@ open Lexer
 
 // Backus Nuar Form for APL
 (*
-<PROGRAM> ::= 
-                | (<STATEMENT> | <EXPRESSION>) "End of Tokens" 
-<EXPRESSION> ::= 
-                | (( <ARRAY> <Dyadic F> | <Monadic F> ) <ARRAY>) <EXPRESSION>
-                | (( <ARRAY> <Dyadic F> | <Monadic F> ) <ARRAY>) 
-                | <ARRAY>
-<STATEMENT> ::= 
-                | <ASSIGN>
-<ARRAY> ::= 
-                | "Number" <ARRAY>
+<ExpressionList> ::= 
+                | "NewLine"
+                | <Expression>
+                | <Expression> "NewLine"  
+                | <Expression> "NewLine" <ExpressionList>          
+<Expression> ::=  
+                | <ArrayExpression>
+                | "(" <ExpressionList> ")"
+<ArrayExpression> ::=
+                | <ArrayAtom>
+                | <Function> <ArrayExpression>
+                | <ArrayNaming>
+<ArrayAtom> ::=
                 | "Number"
-<ASSIGN> ::= 
-                | "IDENTIFIER" "←" <EXPRESSION>
-<Dyadic F> ::= "Plus(+)"
-<Monadic F> ::= "Conjugate(+)"
+                | Strand
+                | "(" <ArrayExpression ")"
+<ArrayNaming> ::= "Identifier" "←" <ArrayExpression>
+<Strand> ::= <ArrayAtom> <Strand>
+<Function> ::= <FunctionAtom>
+<FunctionAtom> ::= <F>
+<F> ::= "+"
 *)
+
+
 
 [<EntryPoint>]
 let main _ =
