@@ -10,7 +10,7 @@ type Token =
     | Multiplication // ×
     | Division // ÷
     | LeftCeiling // ⌈
-    | LeftFloor // ⌊
+    | LeftFloor // ⌊ implemented
     | Asterisk // *
     | CircleStar // ⍟
     | VerticalBar // |
@@ -51,7 +51,7 @@ type Token =
     | OuterProduct // ∘.
     | LeftBracket // (
     | RightBracket // )
-    | Assign // ←
+    | Assign // ← implemented
     // Misc
     | Comment // ⍝ implemented
     | NewLine // \n implemented
@@ -60,6 +60,8 @@ type Token =
     | String of string
     // Identifiers
     | Identifier of string // implemented
+    // End of file
+    | EndOfFile
 
 let private isIndicationOfArray t =
     match t with
@@ -104,7 +106,7 @@ let rec private makeTokens tokenList characters =
 
         makeTokens tokenList newRest
     // Empty character array
-    | [] -> tokenList |> List.rev
+    | [] -> EndOfFile :: tokenList |> List.rev
     // Error, no matches
     | error :: _ -> failwith $"tokenization error at character: {error} | After token: {tokenList.Head}"
 

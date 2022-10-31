@@ -11,6 +11,7 @@
         </Content>
         <Compile Include="Lexer.fs" />
         <Compile Include="Parser.fs" />
+        <Compile Include="main.fs" />
     </ItemGroup>
 
 </Project>
