@@ -6,10 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Lexer.fs" />
         <Content Include="test_program.apl">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Compile Include="Lexer.fs" />
+        <Compile Include="Parser.fs" />
+        <Compile Include="main.fs" />
     </ItemGroup>
 
 </Project>
