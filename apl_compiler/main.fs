@@ -12,7 +12,6 @@ let main _ =
     //let input = "1 + 1"
     let input = getInputString()
     let tokList = lex input
-    let huhList = printTlist tokList;
     System.Console.WriteLine("-----")
     let out = parseAndEval tokList
     System.Console.WriteLine("Result = {0}", snd out)
