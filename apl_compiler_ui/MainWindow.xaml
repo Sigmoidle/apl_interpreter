@@ -6,7 +6,46 @@
         xmlns:local="clr-namespace:apl_compiler_ui"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar ToolBarTray.IsLocked="True">
+                <Button Content="New" Click="NewOnClick" />
+                <Button Content="Open" Click="OpenOnClick" />
+                <Button Content="Save" Click="SaveOnClick" />
+                <Button Content="Save As" Click="SaveAsOnClick" />
+                <Button Content="Transpile" Click="TranspileOnClick" />
+            </ToolBar>
+            <ToolBar Name="SymbolToolbar">
+                
+            </ToolBar>
+        </ToolBarTray>
 
-    </Grid>
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- APL input -->
+            <TextBox Name="Apl" FontFamily="monospace"></TextBox>
+
+            <GridSplitter Grid.Column="1" Width="5" ShowsPreview="True" HorizontalAlignment="Center"></GridSplitter>
+
+            <!-- C output -->
+            <TextBox Grid.Column="2" IsReadOnly="True"></TextBox>
+
+            <GridSplitter Grid.Column="3" Width="5" ShowsPreview="True" HorizontalAlignment="Center"></GridSplitter>
+
+            <!-- syntax tree -->
+            <TreeView Grid.Column="4">
+                <TreeViewItem Header="Test" IsExpanded="True">
+                    <TreeViewItem Header="Test 2"></TreeViewItem>
+                </TreeViewItem>
+            </TreeView>
+        </Grid>
+    </DockPanel>
 </Window>
