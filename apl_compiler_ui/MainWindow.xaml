@@ -31,12 +31,12 @@
             </Grid.ColumnDefinitions>
 
             <!-- APL input -->
-            <TextBox Name="Apl" FontFamily="monospace"></TextBox>
+            <TextBox Name="Apl" FontFamily="Consolas"></TextBox>
 
             <GridSplitter Grid.Column="1" Width="5" ShowsPreview="True" HorizontalAlignment="Center"></GridSplitter>
 
             <!-- C output -->
-            <TextBox Grid.Column="2" IsReadOnly="True"></TextBox>
+            <TextBox Grid.Column="2" Name="COutput" IsReadOnly="True" FontFamily="Consolas"></TextBox>
 
             <GridSplitter Grid.Column="3" Width="5" ShowsPreview="True" HorizontalAlignment="Center"></GridSplitter>
 

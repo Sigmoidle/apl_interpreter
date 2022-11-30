@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using apl_compiler;
 using Microsoft.Win32;
 
 namespace apl_compiler_ui
@@ -92,7 +94,9 @@ namespace apl_compiler_ui
 
         private void TranspileOnClick(object sender, RoutedEventArgs e)
         {
-            // todo
+            var tokens = Lexer.lex(Apl.Text);
+            var output = Parser.parseAndEval(tokens);
+            COutput.Text = output.Item2.ToString(CultureInfo.InvariantCulture);
         }
 
         private void NewOnClick(object sender, RoutedEventArgs e)
