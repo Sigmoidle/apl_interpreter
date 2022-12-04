@@ -45,7 +45,7 @@ let private Add (list1: float list, list2: float list) =
 let parseAndEval tokens =
     let rec Program tokens =
         match tokens with
-        | Token.EndOfFile :: tail -> (tail, []) // Probably shouldn't return 0 here but not sure what val to return
+        | Token.EndOfFile :: tail -> (tail, []) // Probably shouldn't return an empty array?
         | _ -> Statement tokens
 
     and Statement tokens = (NList  >> Function) tokens
