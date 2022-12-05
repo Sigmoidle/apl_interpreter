@@ -23,12 +23,12 @@ and Function = Add
 
 let private parseError = System.Exception("parse error")
 
-let private Add (list1: float list, list2: float list) =
+let private Add (list1: float list, list2: float list) : float list =
     if list1.Length <> list2.Length then
         // TODO: check if uneven array addition in APL is valid
         raise parseError
 
-    let rec AddList (list1: float list, list2: float list) = // returns List
+    let rec AddList (list1: float list, list2: float list) : float list =
         if list1.IsEmpty then
             [] // return empty results list
         else
@@ -42,15 +42,15 @@ let private Add (list1: float list, list2: float list) =
 
 // TODO: make copy of this fn that adds the parts to a parse tree as it
 //       goes instead of eval
-let parseAndEval tokens =
-    let rec Program tokens =
+let parseAndEval (tokens: Token list) : (Token list * float list) =
+    let rec Program (tokens: Token list) : (Token list * float list) =
         match tokens with
         | Token.EndOfFile :: tail -> (tail, []) // Probably shouldn't return an empty array?
         | _ -> Statement tokens
 
-    and Statement tokens = (NList  >> Function) tokens
+    and Statement (tokens: Token list) : (Token list * float list) = (NList  >> DyadicFn) tokens
 
-    and Function (tokens, list1) = // returns (tokens, List)
+    and DyadicFn (tokens, list1) : (Token list * float list) =
         match tokens with
         | Token.Plus :: tail ->
             let tokens, list2 = NList tail
@@ -59,7 +59,7 @@ let parseAndEval tokens =
             (tokens, summed)
         | _ -> raise parseError
 
-    and NList tokens = // returns (tokens, List)
+    and NList (tokens: Token list) : (Token list * float list) =
         match tokens with
         | Token.Number value :: tail ->
             let tokens, numList = NList tail
