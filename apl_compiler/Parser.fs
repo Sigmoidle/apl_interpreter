@@ -40,6 +40,18 @@ let private Add (list1: float list, list2: float list) : float list =
 
     AddList (list1, list2)
 
+let rec private Not (numList: float list) : float list =
+    let ContainsOnlyBinaryValue (numList: float list) : bool =
+        numList |> Seq.forall (fun n -> n = 1.0 || n = 0.0)
+
+    if not (ContainsOnlyBinaryValue numList) then
+        raise parseError
+
+    elif numList.IsEmpty then
+        numList
+    else
+        numList |> Seq.map(fun n -> if n = 1.0 then 0.0 else 1.0) |> Seq.toList
+
 // TODO: make copy of this fn that adds the parts to a parse tree as it
 //       goes instead of eval
 let parseAndEval (tokens: Token list) : (Token list * float list) =
@@ -48,7 +60,20 @@ let parseAndEval (tokens: Token list) : (Token list * float list) =
         | Token.EndOfFile :: tail -> (tail, []) // Probably shouldn't return an empty array?
         | _ -> Statement tokens
 
-    and Statement (tokens: Token list) : (Token list * float list) = (NList  >> DyadicFn) tokens
+    and Statement (tokens: Token list) : (Token list * float list) =
+        match tokens with
+        | Token.Number value :: tail -> (NList  >> DyadicFn) tokens
+        | _ -> MonadicFn tokens// could change to list of all monadics
+
+    and MonadicFn (tokens: Token list) : (Token list * float list) =
+        // Currently does not handle stacking multiple Fns
+        //  e.g. `~~ 0 1` should apply not two times
+        match tokens with
+        | Token.Tilde :: tail ->
+            let tokens, numList = NList tail
+            let result = Not numList
+            (tokens, result)
+        | _ -> raise parseError
 
     and DyadicFn (tokens, list1) : (Token list * float list) =
         match tokens with

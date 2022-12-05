@@ -82,6 +82,7 @@ let rec private makeTokens tokenList characters =
     // Tokens
     | '←' :: rest -> makeTokens (Assign :: tokenList) rest
     | '+' :: rest -> makeTokens (Plus :: tokenList) rest
+    | '~' :: rest -> makeTokens(Tilde :: tokenList) rest
     // Identifiers
     | letter :: rest when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: rest)
