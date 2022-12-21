@@ -1,8 +1,13 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 using apl_compiler;
+using Microsoft.FSharp.Collections;
 using Microsoft.Win32;
 
 namespace apl_compiler_ui
@@ -36,7 +41,7 @@ namespace apl_compiler_ui
 
         private void SetWindowName()
         {
-            Title = "APL Transpiler - " + (string.IsNullOrEmpty(_filePath) ? "Untitled" : _filePath);
+            Title = "APL Interpreter - " + (string.IsNullOrEmpty(_filePath) ? "Untitled" : _filePath);
         }
 
         private bool Save(bool forceSaveAs)
@@ -92,11 +97,55 @@ namespace apl_compiler_ui
             Apl.Focus();
         }
 
-        private void TranspileOnClick(object sender, RoutedEventArgs e)
+        private void RunCode(string code)
         {
-            var tokens = Lexer.lex(Apl.Text);
-            var output = Parser.parseAndEval(tokens);
-            COutput.Text = output.Item2.ToString(CultureInfo.InvariantCulture);
+            LexerOutput.Items.Clear();
+
+            var lines = code.Split("\n");
+
+            foreach (var line in lines)
+            {
+                AddOutput(" > " + line.Trim(), Brushes.Gray);
+
+                FSharpList<Lexer.Token> tokens;
+                
+                try
+                {
+                    tokens = Lexer.lex(line);
+                }
+                catch (Exception ex)
+                {
+                    AddOutput(" < " + ex.Message, Brushes.Red);
+                    return;
+                }
+
+                foreach (var token in tokens)
+                {
+                    var item = new ListBoxItem
+                    {
+                        Content = token.GetType().Name
+                    };
+                    LexerOutput.Items.Add(item);
+                }
+
+                try
+                {
+                    var output = Parser.parseAndEval(tokens);
+                    AddOutput(" < " + output.Item2.ToString(CultureInfo.InvariantCulture), Brushes.Black);
+                }
+                catch (Exception ex)
+                {
+                    AddOutput(" < " + ex.Message, Brushes.Red);
+                    return;
+                }
+            }
+        }
+
+        private void RunOnClick(object sender, RoutedEventArgs e)
+        {
+            AddOutput("[RUNNING PROGRAM]", Brushes.Gray);
+            RunCode(Apl.Text);
+            AddOutput("[PROGRAM FINISHED]", Brushes.Gray);
         }
 
         private void NewOnClick(object sender, RoutedEventArgs e)
@@ -138,6 +187,26 @@ namespace apl_compiler_ui
         {
             var button = (Button)sender;
             InsertText((string)button.Content);
+        }
+
+        private void AddOutput(string text, Brush colour)
+        {
+            var para = new Paragraph()
+            {
+                Foreground = colour
+            };
+            para.Inlines.Add(new Run(text));
+            Output.Document.Blocks.Add(para);
+            Output.ScrollToEnd();
+        }
+
+        private void ReplInputOnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                RunCode(ReplInput.Text);
+                ReplInput.Text = "";
+            }
         }
     }
 }
