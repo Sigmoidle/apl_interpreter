@@ -91,3 +91,26 @@ let parseAndEval (tokens: Token list) : Token list * float list =
         | _ -> (tokens, [])
 
     Program tokens
+
+
+let main (tokens: Token list) =
+    let rec produceVariableList(tokens: Token list) = 
+        let userVariableList = []
+
+        let addToList(tokens:Token list, variable:Token) =
+            let userVariableList = List.append userVariableList [(variable,tokens.Head)]
+            userVariableList
+
+
+        let checkForAssign(tokens: Token list, variable:Token) =
+            if tokens.Head = Token.Assign then addToList(tokens.Tail,variable)
+            else userVariableList
+
+        if tokens.Head = Token.EndOfFile then userVariableList
+        else if tokens.Head = Token.Identifier then checkForAssign(tokens.Tail,tokens.Head)
+        else produceVariableList(tokens.Tail)
+
+
+    let userVariableList = produceVariableList(tokens)
+
+    parseAndEval tokens

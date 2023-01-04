@@ -11,9 +11,10 @@ let fullListToString values : string = values |> Seq.map (fun n -> n.ToString())
 
 [<EntryPoint>]
 let main _ =
+    System.Console.InputEncoding <- System.Text.Encoding.Unicode
     System.Console.WriteLine("Simple Interpreter for APL")
     System.Console.WriteLine("-----")
-    let out = getInputString () |> lex |> parseAndEval
+    let out = getInputString () |> lex |> main
     System.Console.WriteLine("-----")
     System.Console.WriteLine("Result = {0}", snd out |> fullListToString)
     0
