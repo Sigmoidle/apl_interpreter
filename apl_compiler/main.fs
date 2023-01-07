@@ -17,4 +17,7 @@ let main _ =
     let out = getInputString () |> lex |> main
     System.Console.WriteLine("-----")
     System.Console.WriteLine("Result = {0}", snd out |> fullListToString)
+    let out = getInputString () |> lex |> main
+    System.Console.WriteLine("-----")
+    System.Console.WriteLine("Result = {0}", snd out |> fullListToString)
     0

@@ -93,24 +93,81 @@ let parseAndEval (tokens: Token list) : Token list * float list =
     Program tokens
 
 
+let mutable userVariableList = []
 let main (tokens: Token list) =
-    let rec produceVariableList(tokens: Token list) = 
-        let userVariableList = []
+    
+    let floatToString(float: float) =
+        string float
 
-        let addToList(tokens:Token list, variable:Token) =
-            let userVariableList = List.append userVariableList [(variable,tokens.Head)]
+    let rec checkList(userVariableList:list<string*float>,variable:string) =
+        if fst userVariableList.Head = variable then 
+            floatToString(snd userVariableList.Head) |> lex
+        else checkList(userVariableList.Tail,variable)
+
+    let rec addTail(tail:Token list,head:Token list) : Token list =
+        let list = head.Head::tail
+        list
+
+    let rec identifierExists(tokens: Token list) = 
+        match tokens with
+        | Token.Identifier _::_ -> true
+        | Token.EndOfFile _::_ -> false
+        | _ -> identifierExists(tokens.Tail)
+
+
+    let rec checkExpression(tokens: Token list,userVariableList:list<string*float>) : Token list =
+        match tokens with
+        | Token.EndOfFile ::_ -> [Token.EndOfFile]
+        | Token.Identifier variable::tail -> 
+            let newNumber = checkList(userVariableList,variable)
+            let newTokenList = addTail(tail,newNumber) 
+            let newExpression = checkExpression(newTokenList.Tail,userVariableList)
+            [newTokenList.Head]@newExpression
+        | _ -> if not (identifierExists(tokens)) then tokens
+                else let newExpression = checkExpression(tokens.Tail,userVariableList)
+                     [tokens.Head]@newExpression
+
+    let addToList(userVariableList:list<string*float>,variable:string,number:float list) = 
+        let list = userVariableList@[(variable,number.Head)]
+        list
+
+
+    let checkAssign(tokens: Token list, userVariableList:list<string*float>,variable:string) = 
+        if tokens.Head = Token.Assign then 
+            let newExpression = checkExpression(tokens.Tail,userVariableList)
+            let output = parseAndEval(newExpression)
+            let newList = addToList(userVariableList,variable,snd output)
+            newList
+        else
             userVariableList
 
+    let rec createVariableList(tokens: Token list, userVariableList:list<string*float>) = 
+        match tokens with
+        | Token.EndOfFile _::_ -> userVariableList
+        | Token.Identifier variable::tail -> checkAssign(tail,userVariableList,variable)
+        | _::tail -> createVariableList(tail,userVariableList)
+    
+    let rec replaceVariables(tokens:Token list) = 
+        match tokens with
+        | Token.Identifier variable::tail -> 
+            let newNumber = checkList(userVariableList,variable)
+            let newTokenList = addTail(tail,newNumber)
+            let finalTokenList = newTokenList@replaceVariables(newTokenList.Tail)
+            finalTokenList
+        | Token.EndOfFile ::_ -> [Token.EndOfFile]
+        | head::tail -> [head]@replaceVariables(tail)
 
-        let checkForAssign(tokens: Token list, variable:Token) =
-            if tokens.Head = Token.Assign then addToList(tokens.Tail,variable)
-            else userVariableList
-
-        if tokens.Head = Token.EndOfFile then userVariableList
-        else if tokens.Head = Token.Identifier then checkForAssign(tokens.Tail,tokens.Head)
-        else produceVariableList(tokens.Tail)
+    let rec assignExists(tokens:Token list) = 
+        match tokens with 
+        | Token.Assign _::_ -> true
+        | Token.EndOfFile ::_ -> false
+        | _::tail -> assignExists(tail)
 
 
-    let userVariableList = produceVariableList(tokens)
-
-    parseAndEval tokens
+    //←
+    if not(assignExists(tokens)) then 
+        let newTokenList = replaceVariables(tokens)
+        parseAndEval(newTokenList)
+    else 
+        userVariableList <- createVariableList(tokens, userVariableList)
+        ([],[])
