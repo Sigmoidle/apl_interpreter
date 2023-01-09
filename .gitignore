@@ -1,4 +1,3 @@
-/apl_compiler/bin/
-/apl_compiler/obj/
-/apl_compiler_ui/bin/
-/apl_compiler_ui/obj/
+.vs/
+**/obj/
+**/bin/
