@@ -7,14 +7,14 @@
         Title="MainWindow" Height="720" Width="1280">
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar ToolBarTray.IsLocked="True">
+            <ToolBar ToolBarTray.IsLocked="True" Band="0">
                 <Button Content="New" Click="NewOnClick" />
                 <Button Content="Open" Click="OpenOnClick" />
                 <Button Content="Save" Click="SaveOnClick" />
                 <Button Content="Save As" Click="SaveAsOnClick" />
                 <Button Content="Run" Click="RunOnClick" />
             </ToolBar>
-            <ToolBar Name="SymbolToolbar">
+            <ToolBar Name="SymbolToolbar" ToolBarTray.IsLocked="True" Band="1">
 
             </ToolBar>
         </ToolBarTray>

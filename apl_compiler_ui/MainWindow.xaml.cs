@@ -15,12 +15,18 @@ namespace apl_compiler_ui
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private bool _modifiedSinceLastSave = false;
+        private bool _modifiedSinceLastSave;
         private string _filePath = "";
 
-        private readonly string[] _symbols = { "+", "-", "×", "÷", "⌈", "⌊", "*", "⍟", "|", "?", "○", "!" };
+        // list of apl symbols to stick in the toolbar
+        private readonly string[] _symbols =
+        {
+            "+", "-", "×", "÷", "⌈", "⌊", "*", "⍟", "|", "?", "○", "!", "~", "∧", "∨", "⍲", "⍱", "<", "≤", "=", "≥",
+            ">", "≠", "⍴", ",", "[", "]", "⍳", "↑", "↓", "⍋", "⍒", "/", "⌿", "\\", "⍀", "⌽", "⊖", "⍉", "∊", "⊥", "⊤",
+            ".", "∘.", "(", ")", "←", "⍝"
+        };
 
         public MainWindow()
         {
@@ -32,6 +38,7 @@ namespace apl_compiler_ui
             {
                 var btn = new Button();
                 btn.Content = symbol;
+                btn.FontFamily = new FontFamily("Monospace");
                 btn.Click += SymbolOnClick;
                 btn.Width = 32;
 
@@ -108,7 +115,7 @@ namespace apl_compiler_ui
                 AddOutput(" > " + line.Trim(), Brushes.Gray);
 
                 FSharpList<Lexer.Token> tokens;
-                
+
                 try
                 {
                     tokens = Lexer.lex(line);
