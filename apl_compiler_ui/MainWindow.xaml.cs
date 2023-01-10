@@ -138,7 +138,7 @@ namespace apl_compiler_ui
                 try
                 {
                     var output = Parser.parseAndEval(tokens);
-                    AddOutput(" < " + output.Item2.ToString(CultureInfo.InvariantCulture), Brushes.Black);
+                    AddOutput(" < " + output.Item2, Brushes.Black);
                 }
                 catch (Exception ex)
                 {
