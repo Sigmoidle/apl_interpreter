@@ -96,16 +96,38 @@ let parseAndEval (tokens: Token list) : Token list * float list =
 let mutable userVariableList = []
 let main (tokens: Token list) =
     
-    let floatToString(float: float) =
-        string float
+    let floatToString(float: float list) =
+        let rec convertToString(float:float list,index: int) : string = 
+            if(index = 0) then
+                "[" + string(float.Item(index)) + convertToString(float,index + 1)
+            else if(index = float.Length) then
+                "]"
+            else
+                ";" + string(float.Item(index)) + convertToString(float,index + 1)
 
-    let rec checkList(userVariableList:list<string*float>,variable:string) =
+
+        let floatString = convertToString(float,0)
+        let strip chars = String.collect(fun c -> if Seq.exists((=)c) chars then "" else string c + " ")
+        strip "[;]" floatString
+
+    let rec removeEndOfFile(tokens: Token list) : Token list=
+        match tokens with 
+        | Token.EndOfFile ::_-> []
+        | head::tail ->
+            [head]@removeEndOfFile(tail)
+        
+
+    let rec checkList(userVariableList:list<string*float list>,variable:string) =
         if fst userVariableList.Head = variable then 
-            floatToString(snd userVariableList.Head) |> lex
+            let floatList = floatToString(snd userVariableList.Head) |> lex
+            let newFloatList = removeEndOfFile(floatList)
+            newFloatList
         else checkList(userVariableList.Tail,variable)
 
-    let rec addTail(tail:Token list,head:Token list) : Token list =
-        let list = head.Head::tail
+
+
+    let rec addTail(head:Token list,tail:Token list) : Token list =
+        let list = head@tail
         list
 
     let rec identifierExists(tokens: Token list) = 
@@ -115,24 +137,26 @@ let main (tokens: Token list) =
         | _ -> identifierExists(tokens.Tail)
 
 
-    let rec checkExpression(tokens: Token list,userVariableList:list<string*float>) : Token list =
+    let rec checkExpression(tokens: Token list,userVariableList:list<string*float list>) : Token list =
         match tokens with
         | Token.EndOfFile ::_ -> [Token.EndOfFile]
         | Token.Identifier variable::tail -> 
             let newNumber = checkList(userVariableList,variable)
-            let newTokenList = addTail(tail,newNumber) 
+            let newTokenList = addTail(newNumber,tail) 
             let newExpression = checkExpression(newTokenList.Tail,userVariableList)
             [newTokenList.Head]@newExpression
         | _ -> if not (identifierExists(tokens)) then tokens
                 else let newExpression = checkExpression(tokens.Tail,userVariableList)
                      [tokens.Head]@newExpression
 
-    let addToList(userVariableList:list<string*float>,variable:string,number:float list) = 
-        let list = userVariableList@[(variable,number.Head)]
+    let addToList(userVariableList:list<string*float list>,variable:string,number:float list) = 
+        let list = userVariableList@[(variable,number)]
         list
 
 
-    let checkAssign(tokens: Token list, userVariableList:list<string*float>,variable:string) = 
+
+
+    let checkAssign(tokens: Token list, userVariableList:list<string*float list>,variable:string) = 
         if tokens.Head = Token.Assign then 
             let newExpression = checkExpression(tokens.Tail,userVariableList)
             let output = parseAndEval(newExpression)
@@ -141,7 +165,7 @@ let main (tokens: Token list) =
         else
             userVariableList
 
-    let rec createVariableList(tokens: Token list, userVariableList:list<string*float>) = 
+    let rec createVariableList(tokens: Token list, userVariableList:list<string*float list>) = 
         match tokens with
         | Token.EndOfFile _::_ -> userVariableList
         | Token.Identifier variable::tail -> checkAssign(tail,userVariableList,variable)
@@ -164,7 +188,7 @@ let main (tokens: Token list) =
         | _::tail -> assignExists(tail)
 
 
-    //←
+    //← ~
     if not(assignExists(tokens)) then 
         let newTokenList = replaceVariables(tokens)
         parseAndEval(newTokenList)
