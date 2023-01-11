@@ -19,6 +19,7 @@ namespace apl_compiler_ui
     {
         private bool _modifiedSinceLastSave;
         private string _filePath = "";
+        private bool _replFocused;
 
         // list of apl symbols to stick in the toolbar
         private readonly string[] _symbols =
@@ -100,8 +101,9 @@ namespace apl_compiler_ui
 
         private void InsertText(string character)
         {
-            Apl.Text = Apl.Text.Insert(Apl.CaretIndex, character);
-            Apl.Focus();
+            var box = _replFocused ? ReplInput : Apl;
+            box.Text = box.Text.Insert(box.CaretIndex, character);
+            box.Focus();
         }
 
         private void RunCode(string code)
@@ -214,6 +216,16 @@ namespace apl_compiler_ui
                 RunCode(ReplInput.Text);
                 ReplInput.Text = "";
             }
+        }
+
+        private void Apl_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            _replFocused = false;
+        }
+
+        private void ReplInput_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            _replFocused = true;
         }
     }
 }

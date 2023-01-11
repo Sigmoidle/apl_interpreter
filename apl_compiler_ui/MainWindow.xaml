@@ -35,7 +35,8 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- APL input -->
-                <TextBox Name="Apl" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True"></TextBox>
+                <TextBox Name="Apl" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True"
+                         GotFocus="Apl_OnGotFocus"></TextBox>
 
                 <GridSplitter Grid.Column="1" Width="5" ShowsPreview="True" HorizontalAlignment="Center"></GridSplitter>
 
@@ -64,7 +65,8 @@
                 <FlowDocument/>
             </RichTextBox>
             
-            <TextBox Grid.Row="3" Name="ReplInput" FontFamily="Consolas" FontSize="16" KeyDown="ReplInputOnKeyDown"></TextBox>
+            <TextBox Grid.Row="3" Name="ReplInput" FontFamily="Consolas" FontSize="16" KeyDown="ReplInputOnKeyDown"
+                     GotFocus="ReplInput_OnGotFocus"></TextBox>
         </Grid>
     </DockPanel>
 </Window>
