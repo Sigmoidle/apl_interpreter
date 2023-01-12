@@ -9,12 +9,12 @@ open System.IO
 let main _ =
     let aplProgram = File.ReadAllText("test_program.apl")
     let parseTree = aplProgram |> lex |> parse
-    let out = parseTree |> runtime
+    //let out = parseTree |> runtime
     printfn "Simple Interpreter for APL"
     printfn "-----"
     printfn $"Input: \n %A{aplProgram}"
     printfn "-----"
     printfn $"ParseTree: \n %A{parseTree}"
-    printfn "-----"
-    printfn $"Output: %A{snd out}"
+    //printfn "-----"
+    //printfn $"Output: %A{snd out}"
     0

@@ -1,3 +1,2 @@
-﻿5 + 5
-8 + 8
-1 + 1
+﻿⍝ need to make assign work
+var ← 5 5 5

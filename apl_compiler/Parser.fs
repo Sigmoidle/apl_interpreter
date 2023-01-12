@@ -1,5 +1,6 @@
 ﻿module apl_compiler.Parser
 
+open System
 open Lexer
 
 (*
@@ -10,6 +11,7 @@ open Lexer
 <STATEMENT> ::= 
             | <MonadicFn>
             | <DyadicFn>
+            | <NList>
             
 <MonadicFn> ::=
             | Not <MaybeChain>
@@ -25,7 +27,14 @@ open Lexer
             | list of floats
  *)
 
-let functionSymbolList = [ Token.Plus; Token.Tilde ]
+let functionTokenList = [ Token.Plus; Token.Tilde ]
+
+type Symbol = { symbol_type: SymbolType; shape: int * int; value: float list }
+
+and SymbolType =
+    | Scalar
+    | Vector
+    | Unknown
 
 type Program =
     | Statement of Statement * Program
@@ -33,8 +42,10 @@ type Program =
     | EndOfFile
 
 and Statement =
+    | Assign of string * Statement
     | MonadicFn of MonadicFn
     | DyadicFn of DyadicFn
+    | NList of NList
 
 and MonadicFn = Not of MaybeChain
 
@@ -46,10 +57,17 @@ and MaybeChain =
 
 and NList = float list
 
-let private parseError error = System.Exception(error)
+let private parseError error = Exception(error)
+
+let rec private isNewLineNext tokens =
+    match tokens with
+    | Token.Number _ :: tail -> isNewLineNext tail
+    | Token.NewLine :: _ -> true
+    | Token.EndOfFile :: _ -> true
+    | _ -> false
 
 let parse tokens =
-    let rec _Program tokens =
+    let rec _Program tokens=
         match tokens with
         | Token.EndOfFile :: _ -> Program.EndOfFile
         | Token.NewLine :: tail -> Program.NewLine(_Program tail)
@@ -59,6 +77,12 @@ let parse tokens =
 
     and _Statement tokens =
         match tokens with
+        | Token.Identifier name :: Token.Assign :: tail ->
+            let tokens, statement = _Statement tail
+            (tokens, Statement.Assign(name, statement))
+        | Token.Number _ :: tail when isNewLineNext tail ->
+            let tokens, nList = _NList tokens
+            (tokens, Statement.NList(nList))
         | Token.Number _ :: _ ->
             let tokens, dyadicFn = (_NList >> _DyadicFn) tokens
             (tokens, Statement.DyadicFn(dyadicFn))
@@ -88,7 +112,7 @@ let parse tokens =
             let newTokens, numList = _NList tokens
 
             match newTokens with
-            | token :: _ when List.contains token functionSymbolList ->
+            | token :: _ when List.contains token functionTokenList ->
                 let tokens, statement = _Statement tokens
                 (tokens, MaybeChain.Chain(statement))
             | _ -> (newTokens, MaybeChain.NoChain(numList))
@@ -102,5 +126,7 @@ let parse tokens =
             let tokens, numList = _NList tail
             (tokens, value :: numList)
         | _ -> (tokens, [])
-        
+    
+    let symbolTable = Map.empty
+    
     _Program tokens

@@ -46,6 +46,7 @@ let runtime program =
         match statement with
         | MonadicFn func -> _MonadicFn (func, out)
         | DyadicFn func -> _DyadicFn (func, out)
+        | NList value -> value
 
     and _MonadicFn (monadicFn, out) =
         match monadicFn with
