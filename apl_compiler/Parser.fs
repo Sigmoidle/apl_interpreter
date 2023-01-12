@@ -13,8 +13,11 @@ open Lexer
 
  *)
 
+let functionSymbolList = [Token.Plus; Token.Tilde]
+
 type Program =
     | Statement of Statement * Program
+    | NewLine of Program
     | EndOfFile
 
 and Statement =
@@ -22,11 +25,15 @@ and Statement =
     | DyadicFn of DyadicFn
 
 and MonadicFn =
-    | Not of NList
+    | Not of MaybeChain
 
 and DyadicFn =
-    | Add of NList * NList
-    
+    | Add of NList * MaybeChain
+
+and MaybeChain =
+    | NoChain of NList
+    | Chain of Statement
+
 and NList = float list
 
 let private parseError = System.Exception("parse error")
@@ -104,6 +111,7 @@ let parse tokens =
     let rec _Program tokens =
         match tokens with
         | Token.EndOfFile :: _ -> Program.EndOfFile
+        | Token.NewLine :: tail -> Program.NewLine(_Program tail)
         | _ ->
             let tokens, statement = _Statement tokens
             Program.Statement(statement, _Program tokens)
@@ -111,7 +119,7 @@ let parse tokens =
     and _Statement tokens =
         match tokens with
         | Token.Number _ :: _ ->
-            let tokens, dyadicFn = (NList >> _DyadicFn) tokens
+            let tokens, dyadicFn = (_NList >> _DyadicFn) tokens
             (tokens, Statement.DyadicFn(dyadicFn))
         | _ ->
             let tokens, monadicFn = _MonadicFn tokens
@@ -120,21 +128,34 @@ let parse tokens =
     and _DyadicFn (tokens, numList1st) =
         match tokens with
         | Token.Plus :: tail ->
-            let tokens, numList2nd = NList tail
-            (tokens, DyadicFn.Add(numList1st, numList2nd))
+            let tokens, maybeChain = _MaybeChain tail
+            (tokens, DyadicFn.Add(numList1st, maybeChain))
         | _ -> raise parseError
         
     and _MonadicFn tokens =
         match tokens with
         | Token.Tilde :: tail ->
-            let tokens, numList = NList tail
-            (tokens, MonadicFn.Not(numList))
+            let tokens, maybeChain = _MaybeChain tail
+            (tokens, MonadicFn.Not(maybeChain))
         | _ -> raise parseError
+        
+    and _MaybeChain tokens =
+        match tokens with
+        | Token.Number _ :: _ ->
+            let newTokens, numList = _NList tokens
+            match newTokens with
+            | token :: _ when List.contains token functionSymbolList ->
+                let tokens, statement = _Statement tokens
+                (tokens, MaybeChain.Chain(statement))
+            | _ -> (newTokens, MaybeChain.NoChain(numList))
+        | _ ->
+            let tokens, statement = _Statement tokens
+            (tokens, MaybeChain.Chain(statement))
     
-    and NList tokens =
+    and _NList tokens =
         match tokens with
         | Token.Number value :: tail ->
-            let tokens, numList = NList tail
+            let tokens, numList = _NList tail
             (tokens, value :: numList)
         | _ -> (tokens, [])
     
