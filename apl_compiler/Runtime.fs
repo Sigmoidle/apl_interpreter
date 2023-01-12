@@ -1,2 +1,74 @@
 ﻿module apl_compiler.Runtime
 
+open Lexer
+
+let private runtimeError = System.Exception("runtime error")
+
+let private Add (list1: float list, list2: float list) : float list =
+    if list1.Length <> list2.Length then
+        // TODO: check if uneven array addition in APL is valid
+        raise runtimeError
+
+    let rec AddList (list1: float list, list2: float list) : float list =
+        if list1.IsEmpty then
+            [] // return empty results list
+        else
+            let tail1 = list1.Tail
+            let tail2 = list2.Tail
+            let result = list1.Head + list2.Head
+            let resultList = AddList(tail1, tail2)
+            result :: resultList
+
+    AddList(list1, list2)
+
+let rec private Not (numList: float list) : float list =
+    let ContainsOnlyBinaryValue (numList: float list) : bool = numList |> Seq.forall (fun n -> n = 1.0 || n = 0.0)
+
+    if not (ContainsOnlyBinaryValue numList) then
+        raise runtimeError
+
+    elif numList.IsEmpty then
+        numList
+    else
+        numList |> Seq.map (fun n -> if n = 1.0 then 0.0 else 1.0) |> Seq.toList
+
+// TODO: make copy of this fn that adds the parts to a parse tree as it
+//       goes instead of eval
+let parseAndEval (tokens: Token list) : Token list * float list =
+    let rec Program (tokens: Token list) : Token list * float list =
+        match tokens with
+        | Token.EndOfFile :: tail -> (tail, []) // Probably shouldn't return an empty array?
+        | _ -> Statement tokens
+
+    and Statement (tokens: Token list) : Token list * float list =
+        match tokens with
+        | Token.Number _ :: _ -> (NList >> DyadicFn) tokens
+        | _ -> MonadicFn tokens // could change to list of all monadics
+
+    and MonadicFn (tokens: Token list) : Token list * float list =
+        // Currently does not handle stacking multiple Fns
+        //  e.g. `~~ 0 1` should apply "not" two times
+        match tokens with
+        | Token.Tilde :: tail ->
+            let tokens, numList = NList tail
+            let result = Not numList
+            (tokens, result)
+        | _ -> raise runtimeError
+
+    and DyadicFn (tokens, list1) : Token list * float list =
+        match tokens with
+        | Token.Plus :: tail ->
+            let tokens, list2 = NList tail
+            let summed = Add(list1, list2)
+            // EXIT
+            (tokens, summed)
+        | _ -> raise runtimeError
+
+    and NList (tokens: Token list) : Token list * float list =
+        match tokens with
+        | Token.Number value :: tail ->
+            let tokens, numList = NList tail
+            (tokens, value :: numList)
+        | _ -> (tokens, [])
+
+    Program tokens
