@@ -14,12 +14,20 @@ open Lexer
  *)
 
 type Program =
+    | Statement of Statement * Program
     | EndOfFile
-    | Statement of Statement
 
-and Statement = Function of float * Function * float
+and Statement =
+    | MonadicFn of MonadicFn
+    | DyadicFn of DyadicFn
 
-and Function = Add
+and MonadicFn =
+    | Not of NList
+
+and DyadicFn =
+    | Add of NList * NList
+    
+and NList = float list
 
 let private parseError = System.Exception("parse error")
 
@@ -66,7 +74,7 @@ let parseAndEval (tokens: Token list) : Token list * float list =
 
     and MonadicFn (tokens: Token list) : Token list * float list =
         // Currently does not handle stacking multiple Fns
-        //  e.g. `~~ 0 1` should apply not two times
+        //  e.g. `~~ 0 1` should apply "not" two times
         match tokens with
         | Token.Tilde :: tail ->
             let tokens, numList = NList tail
@@ -91,3 +99,43 @@ let parseAndEval (tokens: Token list) : Token list * float list =
         | _ -> (tokens, [])
 
     Program tokens
+
+let parse tokens =
+    let rec _Program tokens =
+        match tokens with
+        | Token.EndOfFile :: _ -> Program.EndOfFile
+        | _ ->
+            let tokens, statement = _Statement tokens
+            Program.Statement(statement, _Program tokens)
+      
+    and _Statement tokens =
+        match tokens with
+        | Token.Number _ :: _ ->
+            let tokens, dyadicFn = (NList >> _DyadicFn) tokens
+            (tokens, Statement.DyadicFn(dyadicFn))
+        | _ ->
+            let tokens, monadicFn = _MonadicFn tokens
+            (tokens, Statement.MonadicFn(monadicFn))
+    
+    and _DyadicFn (tokens, numList1st) =
+        match tokens with
+        | Token.Plus :: tail ->
+            let tokens, numList2nd = NList tail
+            (tokens, DyadicFn.Add(numList1st, numList2nd))
+        | _ -> raise parseError
+        
+    and _MonadicFn tokens =
+        match tokens with
+        | Token.Tilde :: tail ->
+            let tokens, numList = NList tail
+            (tokens, MonadicFn.Not(numList))
+        | _ -> raise parseError
+    
+    and NList tokens =
+        match tokens with
+        | Token.Number value :: tail ->
+            let tokens, numList = NList tail
+            (tokens, value :: numList)
+        | _ -> (tokens, [])
+    
+    _Program tokens

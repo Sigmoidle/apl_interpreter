@@ -2,6 +2,7 @@
 
 open apl_compiler.Parser
 open apl_compiler.Lexer
+open System.IO
 
 let getInputString () : string =
     System.Console.Write("Enter an expression: ")
@@ -11,9 +12,11 @@ let fullListToString values : string = values |> Seq.map (fun n -> n.ToString())
 
 [<EntryPoint>]
 let main _ =
-    System.Console.WriteLine("Simple Interpreter for APL")
-    System.Console.WriteLine("-----")
-    let out = getInputString () |> lex |> parseAndEval
-    System.Console.WriteLine("-----")
-    System.Console.WriteLine("Result = {0}", snd out |> fullListToString)
+    let aplProgram = File.ReadAllText("test_program.apl")
+    let out = aplProgram |> lex |> parse
+    printfn "Simple Interpreter for APL"
+    printfn "-----"
+    printfn $"Input: \n %A{aplProgram}"
+    printfn "-----"
+    printfn $"Parse Tree: %A{out}"
     0
