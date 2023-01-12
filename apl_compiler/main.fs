@@ -2,22 +2,19 @@
 
 open apl_compiler.Parser
 open apl_compiler.Lexer
-
-let getInputString () : string =
-    System.Console.Write("Enter an expression: ")
-    System.Console.ReadLine()
-
-let fullListToString values : string = values |> Seq.map (fun n -> n.ToString()) |> String.concat ", " |> sprintf "[ %s ]"
+open apl_compiler.Runtime
+open System.IO
 
 [<EntryPoint>]
 let main _ =
-    System.Console.InputEncoding <- System.Text.Encoding.Unicode
-    System.Console.WriteLine("Simple Interpreter for APL")
-    System.Console.WriteLine("-----")
-    let out = getInputString () |> lex |> main
-    System.Console.WriteLine("-----")
-    System.Console.WriteLine("Result = {0}", snd out |> fullListToString)
-    let out = getInputString () |> lex |> main
-    System.Console.WriteLine("-----")
-    System.Console.WriteLine("Result = {0}", snd out |> fullListToString)
+    let aplProgram = File.ReadAllText("test_program.apl")
+    let parseTree = aplProgram |> lex |> parse
+    let out = parseTree |> runtime
+    printfn "Simple Interpreter for APL"
+    printfn "-----"
+    printfn $"Input: \n %A{aplProgram}"
+    printfn "-----"
+    printfn $"ParseTree: \n %A{parseTree}"
+    printfn "-----"
+    printfn $"Output: %A{snd out}"
     0
