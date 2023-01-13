@@ -159,7 +159,7 @@ and handleComment characters =
 
 and makeStringToken (calculatedString: string) characters =
     match characters with
-    | letter :: rest when isLetter letter -> makeStringToken (calculatedString + string letter) rest
+    | letter :: rest when isLetter letter || letter = '_' -> makeStringToken (calculatedString + string letter) rest
     | [] -> ([], calculatedString)
     | _ -> (characters, calculatedString)
 
