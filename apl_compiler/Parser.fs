@@ -15,15 +15,17 @@ open Lexer
             
 <MonadicFn> ::=
             | Not <EXPRESSION>
+            | Roll <EXPRESSION>
             
 <DyadicFn> ::=
             | Add <EXPRESSION> <EXPRESSION>
+            | Deal <EXPRESSION> <EXPRESSION>
 
 <NList> ::=
             | list of floats
  *)
 
-let functionTokenList = [ Token.Plus; Token.Tilde; Token.QuestionMark ]
+let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark ]
 
 type Program =
     | Expression of Expression * Program
@@ -57,6 +59,17 @@ let rec private isNewLineNext tokens =
     | Token.EndOfFile :: _ -> true
     | _ -> false
 
+let private gotoMatchingBracket tokens =
+    let rec go tokens acc depth =
+        match tokens with
+        | Token.RightBracket :: tail when depth = 0 -> (tokens, acc)
+        | Token.RightBracket :: tail when depth <> 0 -> go tail (Token.RightBracket :: acc) (depth - 1)
+        | Token.LeftBracket :: tail -> go tail (Token.LeftBracket :: acc) (depth + 1)
+        | token :: tail -> go tail (token :: acc) depth
+        | _ -> raise <| parseError "The brackets are unbalanced!"
+
+    go tokens [] 0
+
 let parse tokens =
     let rec _Program tokens =
         match tokens with
@@ -68,6 +81,14 @@ let parse tokens =
 
     and _Expression tokens =
         match tokens with
+        | Token.LeftBracket :: tail ->
+            let newTokens, accumulation = gotoMatchingBracket tail
+
+            match newTokens with
+            | token :: tail when List.contains token dyadicFunctionTokenList ->
+                let tokens, dyadicFn = (tail, snd <| _Expression accumulation) |> _DyadicFn
+                (tokens, Expression.DyadicFn(dyadicFn))
+            | _ -> (tokens, snd <| _Expression accumulation)
         | Token.Identifier name :: Token.Assign :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, Expression.Assign(name, expression))
@@ -79,20 +100,20 @@ let parse tokens =
             let newTokens, dyadicFn = (_NList >> _DyadicFn) tokens
             (newTokens, Expression.DyadicFn(dyadicFn))
         | Token.Identifier string :: tail ->
-            let newTokens, dyadicFn = (tail, NList.NListIdentifier string) |> _DyadicFn
+            let newTokens, dyadicFn = (tail, Expression.NList(NList.NListIdentifier string)) |> _DyadicFn
             (newTokens, Expression.DyadicFn(dyadicFn))
         | _ ->
             let newTokens, monadicFn = _MonadicFn tokens
             (newTokens, Expression.MonadicFn(monadicFn))
 
-    and _DyadicFn (tokens, nList1st) =
+    and _DyadicFn (tokens, expression1) =
         match tokens with
         | Token.Plus :: tail ->
-            let newTokens, expression = _Expression tail
-            (newTokens, DyadicFn.Add(Expression.NList nList1st, expression))
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Add(expression1, expression2))
         | Token.QuestionMark :: tail ->
-            let newTokens, expression = _Expression tail
-            (newTokens, DyadicFn.Deal(Expression.NList nList1st, expression))
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Deal(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
