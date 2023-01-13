@@ -2,7 +2,7 @@
 
 open apl_compiler.Parser
 
-type RuntimeData = { _program: Program; _symbolTable: Map<string, NList> }
+type RuntimeData = { _program: Program; _symbolTable: Map<string, float list> }
 
 let createSymbols (program: Program) : RuntimeData =
 

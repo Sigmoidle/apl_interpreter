@@ -15,13 +15,13 @@ let main _ =
     let out = runtimeData |> runtime
     printfn "Simple Interpreter for APL"
     printfn "-----"
-    printfn $"Input: \n %A{aplProgram}"
+    printfn $"Input: \n%A{aplProgram}"
     printfn "-----"
-    printfn $"ParseTree: \n %A{parseTree}"
+    printfn $"ParseTree: \n%A{parseTree}"
     printfn "-----"
-    printfn $"SymbolTable before running: \n %A{runtimeData._symbolTable}"
+    printfn $"SymbolTable before running: \n%A{runtimeData._symbolTable}"
     printfn "-----"
     printfn $"Output: %A{snd out}"
     printfn "-----"
-    printfn $"Finished Symbol Table: \n %A{(fst out)._symbolTable}"
+    printfn $"Finished Symbol Table: \n%A{(fst out)._symbolTable}"
     0

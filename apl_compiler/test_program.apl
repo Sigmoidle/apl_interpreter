@@ -1,3 +1,5 @@
-﻿var ← 5 5 5 5
-vector ← 6 4 2
-variable ← 4
+﻿
+var_one ← 1 2 3 4
+var_two ← 4 3 2 1
+output ← var_one + var_two
+output

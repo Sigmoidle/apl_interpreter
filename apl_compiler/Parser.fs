@@ -48,7 +48,9 @@ and MaybeChain =
     | NoChain of NList
     | Chain of Expression
 
-and NList = float list
+and NList =
+    | NListIdentifier of string
+    | NListValue of float list
 
 let private parseError error = Exception(error)
 
@@ -73,11 +75,15 @@ let parse tokens =
         | Token.Identifier name :: Token.Assign :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, Expression.Assign(name, expression))
+        | Token.Identifier name :: tail when isNewLineNext tail -> (tail, Expression.NList(NList.NListIdentifier name))
         | Token.Number _ :: tail when isNewLineNext tail ->
             let newTokens, nList = _NList tokens
             (newTokens, Expression.NList(nList))
         | Token.Number _ :: _ ->
             let newTokens, dyadicFn = (_NList >> _DyadicFn) tokens
+            (newTokens, Expression.DyadicFn(dyadicFn))
+        | Token.Identifier string :: tail ->
+            let newTokens, dyadicFn = (tail, NList.NListIdentifier string) |> _DyadicFn
             (newTokens, Expression.DyadicFn(dyadicFn))
         | _ ->
             let newTokens, monadicFn = _MonadicFn tokens
@@ -117,7 +123,10 @@ let parse tokens =
         match tokens with
         | Token.Number value :: tail ->
             let newTokens, nList = _NList tail
-            (newTokens, value :: nList)
-        | _ -> (tokens, [])
+
+            match nList with
+            | NListValue nList -> (newTokens, NList.NListValue(value :: nList))
+            | NListIdentifier _ -> raise <| parseError "Identifier found while attempting to parse NList value"
+        | _ -> (tokens, NList.NListValue [])
 
     _Program tokens
