@@ -10,7 +10,7 @@ type Token =
     | Multiplication // ×
     | Division // ÷
     | LeftCeiling // ⌈
-    | LeftFloor // ⌊ implemented
+    | LeftFloor // ⌊
     | Asterisk // *
     | CircleStar // ⍟
     | VerticalBar // |
@@ -51,15 +51,15 @@ type Token =
     | OuterProduct // ∘.
     | LeftBracket // (
     | RightBracket // )
-    | Assign // ← implemented
+    | Assign // ←
     // Misc
-    | Comment // ⍝ implemented
-    | NewLine // \n implemented
+    | Comment // ⍝
+    | NewLine // \n
     // Types
-    | Number of float // implemented
+    | Number of float //
     | String of string
     // Identifiers
-    | Identifier of string // implemented
+    | Identifier of string //
     // End of file
     | EndOfFile
 
@@ -83,6 +83,7 @@ let rec private makeTokens tokenList characters =
     | '←' :: rest -> makeTokens (Assign :: tokenList) rest
     | '+' :: rest -> makeTokens (Plus :: tokenList) rest
     | '~' :: rest -> makeTokens (Tilde :: tokenList) rest
+    | '?' :: rest -> makeTokens (QuestionMark :: tokenList) rest
     // Identifiers
     | letter :: rest when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: rest)
