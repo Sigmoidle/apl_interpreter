@@ -40,9 +40,13 @@ and Expression =
     | DyadicFn of DyadicFn
     | NList of NList
 
-and MonadicFn = Not of MaybeChain
+and MonadicFn =
+    | Not of MaybeChain
+    | Roll of MaybeChain
 
-and DyadicFn = Add of NList * MaybeChain
+and DyadicFn =
+    | Add of NList * MaybeChain
+    | Deal of NList * MaybeChain
 
 and MaybeChain =
     | NoChain of NList
@@ -94,6 +98,9 @@ let parse tokens =
         | Token.Plus :: tail ->
             let newTokens, maybeChain = _MaybeChain tail
             (newTokens, DyadicFn.Add(nList1st, maybeChain))
+        | Token.QuestionMark :: tail ->
+            let newTokens, maybeChain = _MaybeChain tail
+            (newTokens, DyadicFn.Deal(nList1st, maybeChain))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -102,6 +109,9 @@ let parse tokens =
         | Token.Tilde :: tail ->
             let newTokens, maybeChain = _MaybeChain tail
             (newTokens, MonadicFn.Not(maybeChain))
+        | Token.QuestionMark :: tail ->
+            let newTokens, maybeChain = _MaybeChain tail
+            (newTokens, MonadicFn.Roll(maybeChain))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
