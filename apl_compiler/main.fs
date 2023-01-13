@@ -11,15 +11,17 @@ open System.IO
 let main _ =
     let aplProgram = File.ReadAllText("test_program.apl")
     let parseTree = aplProgram |> lex |> parse
-    let symbolTable = parseTree |> createSymbols
-    //let out = parseTree |> runtime
+    let runtimeData = parseTree |> createSymbols
+    let out = runtimeData |> runtime
     printfn "Simple Interpreter for APL"
     printfn "-----"
     printfn $"Input: \n %A{aplProgram}"
     printfn "-----"
     printfn $"ParseTree: \n %A{parseTree}"
     printfn "-----"
-    printfn $"SymbolTable: \n %A{symbolTable._symbolTable}"
-    //printfn "-----"
-    //printfn $"Output: %A{snd out}"
+    printfn $"SymbolTable before running: \n %A{runtimeData._symbolTable}"
+    printfn "-----"
+    printfn $"Output: %A{snd out}"
+    printfn "-----"
+    printfn $"Finished Symbol Table: \n %A{(fst out)._symbolTable}"
     0
