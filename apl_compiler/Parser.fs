@@ -14,20 +14,16 @@ open Lexer
             | <NList>
             
 <MonadicFn> ::=
-            | Not <MaybeChain>
+            | Not <EXPRESSION>
             
 <DyadicFn> ::=
-            | Add <NList> <MaybeChain>
-
-<MaybeChain> ::= 
-            | <NList>
-            | <EXPRESSION>
+            | Add <EXPRESSION> <EXPRESSION>
 
 <NList> ::=
             | list of floats
  *)
 
-let functionTokenList = [ Token.Plus; Token.Tilde ]
+let functionTokenList = [ Token.Plus; Token.Tilde; Token.QuestionMark ]
 
 type Program =
     | Expression of Expression * Program
@@ -41,16 +37,12 @@ and Expression =
     | NList of NList
 
 and MonadicFn =
-    | Not of MaybeChain
-    | Roll of MaybeChain
+    | Not of Expression
+    | Roll of Expression
 
 and DyadicFn =
-    | Add of NList * MaybeChain
-    | Deal of NList * MaybeChain
-
-and MaybeChain =
-    | NoChain of NList
-    | Chain of Expression
+    | Add of Expression * Expression
+    | Deal of Expression * Expression
 
 and NList =
     | NListIdentifier of string
@@ -96,38 +88,24 @@ let parse tokens =
     and _DyadicFn (tokens, nList1st) =
         match tokens with
         | Token.Plus :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, DyadicFn.Add(nList1st, maybeChain))
+            let newTokens, expression = _Expression tail
+            (newTokens, DyadicFn.Add(Expression.NList nList1st, expression))
         | Token.QuestionMark :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, DyadicFn.Deal(nList1st, maybeChain))
+            let newTokens, expression = _Expression tail
+            (newTokens, DyadicFn.Deal(Expression.NList nList1st, expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
     and _MonadicFn tokens =
         match tokens with
         | Token.Tilde :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, MonadicFn.Not(maybeChain))
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Not(expression))
         | Token.QuestionMark :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, MonadicFn.Roll(maybeChain))
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Roll(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
-
-    and _MaybeChain tokens =
-        match tokens with
-        | Token.Number _ :: _ ->
-            let newTokens, nList = _NList tokens
-
-            match newTokens with
-            | token :: _ when List.contains token functionTokenList ->
-                let tokens, expression = _Expression tokens
-                (tokens, MaybeChain.Chain(expression))
-            | _ -> (newTokens, MaybeChain.NoChain(nList))
-        | _ ->
-            let newTokens, expression = _Expression tokens
-            (newTokens, MaybeChain.Chain(expression))
 
     and _NList tokens =
         match tokens with
