@@ -29,13 +29,6 @@ open Lexer
 
 let functionTokenList = [ Token.Plus; Token.Tilde ]
 
-type Symbol = { symbol_type: SymbolType; shape: int * int; value: float list }
-
-and SymbolType =
-    | Scalar
-    | Vector
-    | Unknown
-
 type Program =
     | Statement of Statement * Program
     | NewLine of Program
@@ -126,7 +119,5 @@ let parse tokens =
             let tokens, numList = _NList tail
             (tokens, value :: numList)
         | _ -> (tokens, [])
-    
-    let symbolTable = Map.empty
     
     _Program tokens
