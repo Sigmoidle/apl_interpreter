@@ -46,7 +46,7 @@ let private _Multiply (list1: float list, list2: float list) =
 
 let private _Divide (list1: float list, list2: float list) =
     match list1.Length with
-    | 1 when list1.Head <> 0 && list2.Length <> 1 -> list2 |> Seq.map (fun float -> float / list1.Head) |> Seq.toList
+    | 1 when list1.Head <> 0.0 && list2.Length <> 1 -> list2 |> Seq.map (fun float -> float / list1.Head) |> Seq.toList
     | _ when List.contains 0.0 list2 ->
         raise
         <| runtimeError $"The array: %A{list2} contains one or more 0s which will cause a divide by 0 error for the division operation (÷)"
@@ -71,7 +71,7 @@ let private _Roll (numList: float list) =
     if numList.Length <> 1 then
         raise <| runtimeError $"The array: %A{numList} is not a scalar and roll(?) requires a scalar"
 
-    if numList.Head < 1 then
+    if numList.Head < 1.0 then
         raise <| runtimeError $"The array: %A{numList} is less than 1 and roll(?) requires integers above 0"
 
     if numList.IsEmpty then
@@ -84,7 +84,7 @@ let private _Deal (list1: float list, list2: float list) =
         raise
         <| runtimeError $"The array: %A{list1} or %A{list2} is not a scalar and deal(?) requires a scalar"
 
-    if list1.Head < 1 || list2.Head < 1 then
+    if list1.Head < 1.0 || list2.Head < 1.0 then
         raise
         <| runtimeError $"The array: %A{list1} or %A{list2} is less than 1 and deal(?) requires integers above 0"
 
@@ -145,6 +145,20 @@ let private _Negate (list: float list) =
 
 let private _Tally (list: float list) = [ Convert.ToDouble list.Length ]
 
+let private _IndexGenerator (list: float list) =
+    match list.Length with
+    | 1 when list.Head >= 1.0 -> [ Convert.ToDouble 1 .. Convert.ToInt32 list.Head ]
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list} is not a scalar or the number isn't large enough and therefore is incompatible with the Index Generator function (⍳)"
+
+let private _Range (list1: float list, list2: float list) =
+    match list1.Length, list2.Length with
+    | 1, 1 when list1.Head >= 0.0 && (list1.Head + 1.0) < list2.Head -> [ Convert.ToDouble(Convert.ToInt32 list1.Head) .. (Convert.ToInt32 list2.Head) ]
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list1} or %A{list2} is not a scalar or isn't large enough and therefore is incompatible with the Range function (⍳)"
+
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
@@ -179,6 +193,7 @@ let runtime data =
         | MultiplyReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _MultiplyReduce
         | DivideReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _DivideReduce
         | SubtractReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _SubtractReduce
+        | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
@@ -197,5 +212,8 @@ let runtime data =
         | Subtract (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Subtract
+        | Range (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Range
 
     _Program (data, [ 0 ])

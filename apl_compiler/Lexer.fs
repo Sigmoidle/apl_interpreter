@@ -37,7 +37,8 @@ type Token =
     //| Comma // ,
     //| LeftSquareBracket // [
     //| RightSquareBracket // ]
-    //| Iota // ⍳
+    | Iota // ⍳
+    | Range // …
     //| UpwardPointingArrow // ↑
     //| DownwardPointingArrow // ↓
     //| DeltaStile // ⍋
@@ -99,6 +100,8 @@ let rec private makeTokens tokenList characters =
     | '×' :: tail -> makeTokens (Multiplication :: tokenList) tail
     | '÷' :: tail -> makeTokens (Division :: tokenList) tail
     | '≢' :: tail -> makeTokens (Tally :: tokenList) tail
+    | '…' :: tail -> makeTokens (Range :: tokenList) tail
+    | '⍳' :: tail -> makeTokens (Iota :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)
