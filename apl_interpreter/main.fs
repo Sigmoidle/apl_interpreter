@@ -4,8 +4,19 @@ open apl_compiler.Parser
 open apl_compiler.Lexer
 open apl_compiler.Symbols
 open apl_compiler.Runtime
-
 open System.IO
+
+let public getTokens input = input |> lex
+
+let public getParseTree input = input |> lex |> parse
+
+let public getInitialSymbolTable input = (input |> lex |> parse |> createSymbols)._symbolTable
+
+let public getOutput input = input |> lex |> parse |> createSymbols |> runtime |> snd
+
+let public getFinishedSymbolTable input = (input |> lex |> parse |> createSymbols |> runtime |> fst)._symbolTable
+
+let public interpret input = input |> lex |> parse |> createSymbols |> runtime
 
 [<EntryPoint>]
 let main _ =

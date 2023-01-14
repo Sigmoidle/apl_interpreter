@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "apl_compiler", "apl_compiler\apl_compiler.fsproj", "{03CA5C24-4A04-459E-89C9-31366FC398E4}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "apl_interpreter", "apl_interpreter\apl_interpreter.fsproj", "{03CA5C24-4A04-459E-89C9-31366FC398E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "apl_compiler_ui", "apl_compiler_ui\apl_compiler_ui.csproj", "{5BBE2E18-AE9B-4571-8192-388F00044FAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "apl_interpreter_ui", "apl_interpreter_ui\apl_interpreter_ui.csproj", "{5BBE2E18-AE9B-4571-8192-388F00044FAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -188,7 +188,6 @@ and makeStringToken (calculatedString: string) characters =
 
 let public lex (inputString: string) = inputString |> Seq.toList |> makeTokens []
 
-
 let public testLexer =
     let aplProgram = File.ReadAllText("test_program.apl")
 
