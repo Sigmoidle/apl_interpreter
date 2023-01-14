@@ -8,6 +8,7 @@ type Token =
     | AddReduce // +/
     | DivideReduce // ÷/
     | MultiplyReduce // ×/
+    | SubtractReduce // -/
     | Plus // +
     | Hyphen // -
     | Multiplication // ×
@@ -86,8 +87,10 @@ let rec private makeTokens tokenList characters =
     | '×' :: '/' :: tail -> makeTokens (MultiplyReduce :: tokenList) tail
     | '÷' :: '/' :: tail -> makeTokens (DivideReduce :: tokenList) tail
     | '+' :: '/' :: tail -> makeTokens (AddReduce :: tokenList) tail
+    | '-' :: '/' :: tail -> makeTokens (SubtractReduce :: tokenList) tail
     | '←' :: tail -> makeTokens (Assign :: tokenList) tail
     | '+' :: tail -> makeTokens (Plus :: tokenList) tail
+    | '-' :: tail -> makeTokens (Hyphen :: tokenList) tail
     | '~' :: tail -> makeTokens (Tilde :: tokenList) tail
     | '?' :: tail -> makeTokens (QuestionMark :: tokenList) tail
     | '(' :: tail -> makeTokens (LeftBracket :: tokenList) tail

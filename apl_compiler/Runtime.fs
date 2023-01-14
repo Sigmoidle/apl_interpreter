@@ -28,8 +28,17 @@ let private _Add (list1: float list, list2: float list) =
         raise
         <| runtimeError $"The array: %A{list1} and %A{list2} are not compatible lengths for the add operation (+)"
 
+let private _Subtract (list1: float list, list2: float list) =
+    match list1.Length with
+    | 1 -> list2 |> Seq.map (fun float -> float - list1.Head) |> Seq.toList
+    | _ when list1.Length = list2.Length -> Seq.map2 (-) list1 list2 |> Seq.toList
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list1} and %A{list2} are not compatible lengths for the subtract operation (-)"
+
 let private _Multiply (list1: float list, list2: float list) =
     match list1.Length with
+    | 1 -> list2 |> Seq.map (fun float -> float * list1.Head) |> Seq.toList
     | _ when list1.Length = list2.Length -> Seq.map2 (*) list1 list2 |> Seq.toList
     | _ ->
         raise
@@ -37,6 +46,7 @@ let private _Multiply (list1: float list, list2: float list) =
 
 let private _Divide (list1: float list, list2: float list) =
     match list1.Length with
+    | 1 when list1.Head <> 0 -> list2 |> Seq.map (fun float -> float / list1.Head) |> Seq.toList
     | _ when List.contains 0.0 list2 ->
         raise
         <| runtimeError $"The array: %A{list2} contains one or more 0s which will cause a divide by 0 error for the division operation (÷)"
@@ -113,6 +123,11 @@ let private _DivideReduce (list: float list) =
     | [] -> raise <| runtimeError $"The array: %A{list} is empty and the reduce operation requires numbers"
     | _ -> [ list |> List.reduceBack (fun a b -> a / b) ]
 
+let private _SubtractReduce (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the reduce operation requires numbers"
+    | _ -> [ list |> List.reduceBack (fun a b -> a - b) ]
+
 let private _Reciprocal (list: float list) =
     match list with
     | [] ->
@@ -122,6 +137,11 @@ let private _Reciprocal (list: float list) =
         raise
         <| runtimeError $"The array: %A{list} contains one or more 0s which will cause a divide by 0 error for the Reciprocal function(÷)"
     | _ -> list |> Seq.map (fun x -> 1.0 / x) |> Seq.toList
+
+let private _Negate (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
+    | _ -> list |> Seq.map (fun x -> x * -1.0) |> Seq.toList
 
 let runtime data =
     let rec _Program (data, out) =
@@ -149,11 +169,13 @@ let runtime data =
         match monadicFn with
         | Not expression -> _Expression (expression, symbolTable, out) |> snd |> _Not
         | Roll expression -> _Expression (expression, symbolTable, out) |> snd |> _Roll
+        | Negate expression -> _Expression (expression, symbolTable, out) |> snd |> _Negate
         | SignOf expression -> _Expression (expression, symbolTable, out) |> snd |> _SignOf
         | Reciprocal expression -> _Expression (expression, symbolTable, out) |> snd |> _Reciprocal
         | AddReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _AddReduce
         | MultiplyReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _MultiplyReduce
         | DivideReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _DivideReduce
+        | SubtractReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _SubtractReduce
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
@@ -169,5 +191,8 @@ let runtime data =
         | Divide (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Divide
+        | Subtract (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Subtract
 
     _Program (data, [ 0 ])

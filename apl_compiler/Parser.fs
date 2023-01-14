@@ -41,24 +41,28 @@ and Expression =
 
 and MonadicFn =
     | Not of Expression
+    | Negate of Expression
     | Roll of Expression
     | SignOf of Expression
     | Reciprocal of Expression
     | DivideReduce of Expression
     | MultiplyReduce of Expression
     | AddReduce of Expression
+    | SubtractReduce of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
     | Deal of Expression * Expression
     | Multiply of Expression * Expression
     | Divide of Expression * Expression
+    | Subtract of Expression * Expression
 
 and NList =
     | NListIdentifier of string
     | NListValue of float list
 
-let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark; Token.Multiplication ]
+let dyadicFunctionTokenList =
+    [ Token.Plus; Token.QuestionMark; Token.Multiplication; Token.Division; Token.Hyphen ]
 
 let private parseError error = Exception(error)
 
@@ -133,6 +137,9 @@ let parse tokens =
         | Token.Division :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Divide(expression1, expression2))
+        | Token.Hyphen :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Subtract(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -150,6 +157,9 @@ let parse tokens =
         | Token.Division :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Reciprocal(expression))
+        | Token.Hyphen :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Negate(expression))
         | Token.MultiplyReduce :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.MultiplyReduce(expression))
@@ -159,6 +169,9 @@ let parse tokens =
         | Token.AddReduce :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.AddReduce(expression))
+        | Token.SubtractReduce :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.SubtractReduce(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
