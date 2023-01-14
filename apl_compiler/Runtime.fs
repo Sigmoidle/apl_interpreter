@@ -20,6 +20,13 @@ let rec private _ConvertNListsToValues (symbolTable: Map<string, float list>) (n
     | NListValue value1, NListIdentifier string2 -> (value1, symbolTable.Item(string2))
     | NListIdentifier string1, NListIdentifier string2 -> (symbolTable.Item(string1), symbolTable.Item(string2))
 
+let private _Select (list1: float list, list2: float list) =
+    match list1 |> List.reduce max, list1 |> List.reduce min with
+    | max, min when (max - 1.0) < list2.Length && (min - 1.0) >= 0 -> List.map (fun (index: float) -> list2[Convert.ToInt32(index - 1.0)]) list1
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list1} contains values larger than the size of the RHS. Can't Select (⊇)"
+
 let private _Add (list1: float list, list2: float list) =
     match list1.Length with
     | 1 -> list2 |> Seq.map (fun float -> float + list1.Head) |> Seq.toList
@@ -215,5 +222,8 @@ let runtime data =
         | Range (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Range
+        | Select (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Select
 
     _Program (data, [ 0 ])

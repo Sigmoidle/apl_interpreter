@@ -14,6 +14,7 @@ type Token =
     | Multiplication // ×
     | Division // ÷
     | Tally // ≢
+    | Select // ⊇
     //| LeftCeiling // ⌈
     //| LeftFloor // ⌊
     //| Asterisk // *
@@ -102,6 +103,7 @@ let rec private makeTokens tokenList characters =
     | '≢' :: tail -> makeTokens (Tally :: tokenList) tail
     | '…' :: tail -> makeTokens (Range :: tokenList) tail
     | '⍳' :: tail -> makeTokens (Iota :: tokenList) tail
+    | '⊇' :: tail -> makeTokens (Select :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)

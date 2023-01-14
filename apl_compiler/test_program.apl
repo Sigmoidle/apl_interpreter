@@ -1,2 +1,4 @@
-﻿⍝ testing index generator
-0…10
+﻿⍝ testing select function
+
+
+1 1 1 1 1 1 1 1 1 ⊇ 1 2 3 4 5

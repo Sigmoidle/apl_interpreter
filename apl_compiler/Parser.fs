@@ -59,13 +59,14 @@ and DyadicFn =
     | Divide of Expression * Expression
     | Subtract of Expression * Expression
     | Range of Expression * Expression
+    | Select of Expression * Expression
 
 and NList =
     | NListIdentifier of string
     | NListValue of float list
 
 let dyadicFunctionTokenList =
-    [ Token.Plus; Token.QuestionMark; Token.Multiplication; Token.Division; Token.Hyphen; Token.Range ]
+    [ Token.Plus; Token.QuestionMark; Token.Multiplication; Token.Division; Token.Hyphen; Token.Range; Token.Select ]
 
 let private parseError error = Exception(error)
 
@@ -146,6 +147,9 @@ let parse tokens =
         | Token.Range :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Range(expression1, expression2))
+        | Token.Select :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Select(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
