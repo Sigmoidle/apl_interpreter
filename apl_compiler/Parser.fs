@@ -6,9 +6,11 @@ open Lexer
 (*
 <PROGRAM> ::=
             | EndOfFile
+            | NewLine: <PROGRAM>
             | <EXPRESSION> <PROGRAM>
 
 <EXPRESSION> ::= 
+            | Assign: string * <EXPRESSION>
             | <MonadicFn>
             | <DyadicFn>
             | <NList>
@@ -23,9 +25,8 @@ open Lexer
 
 <NList> ::=
             | list of floats
+            | string
  *)
-
-let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark ]
 
 type Program =
     | Expression of Expression * Program
@@ -50,19 +51,22 @@ and NList =
     | NListIdentifier of string
     | NListValue of float list
 
+let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark ]
+
 let private parseError error = Exception(error)
 
-let rec private isNewLineNext tokens =
+let rec private isNewLineOrEndNext tokens =
     match tokens with
-    | Token.Number _ :: tail -> isNewLineNext tail
+    | Token.Number _ :: tail -> isNewLineOrEndNext tail
     | Token.NewLine :: _ -> true
     | Token.EndOfFile :: _ -> true
+    | [] -> true
     | _ -> false
 
 let private gotoMatchingBracket tokens =
     let rec go tokens acc depth =
         match tokens with
-        | Token.RightBracket :: tail when depth = 0 -> (tokens, acc)
+        | Token.RightBracket :: _ when depth = 0 -> (tokens, List.rev acc)
         | Token.RightBracket :: tail when depth <> 0 -> go tail (Token.RightBracket :: acc) (depth - 1)
         | Token.LeftBracket :: tail -> go tail (Token.LeftBracket :: acc) (depth + 1)
         | token :: tail -> go tail (token :: acc) depth
@@ -85,19 +89,21 @@ let parse tokens =
             let newTokens, accumulation = gotoMatchingBracket tail
 
             match newTokens with
-            | token :: tail when List.contains token dyadicFunctionTokenList ->
-                let tokens, dyadicFn = (tail, snd <| _Expression accumulation) |> _DyadicFn
+            | _ :: token :: tail when List.contains token dyadicFunctionTokenList ->
+                let tokens, dyadicFn = (token :: tail, snd <| _Expression accumulation) |> _DyadicFn
                 (tokens, Expression.DyadicFn(dyadicFn))
-            | _ -> (tokens, snd <| _Expression accumulation)
+            | _ :: tail -> (tail, snd <| _Expression accumulation)
+            | _ -> ([], snd <| _Expression accumulation)
         | Token.Identifier name :: Token.Assign :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, Expression.Assign(name, expression))
-        | Token.Identifier name :: tail when isNewLineNext tail -> (tail, Expression.NList(NList.NListIdentifier name))
-        | Token.Number _ :: tail when isNewLineNext tail ->
+        | Token.Identifier name :: tail when isNewLineOrEndNext tail -> (tail, Expression.NList(NList.NListIdentifier name))
+        | Token.Number _ :: tail when isNewLineOrEndNext tail ->
             let newTokens, nList = _NList tokens
             (newTokens, Expression.NList(nList))
         | Token.Number _ :: _ ->
-            let newTokens, dyadicFn = (_NList >> _DyadicFn) tokens
+            let newTokens, nList = tokens |> _NList
+            let newTokens, dyadicFn = (newTokens, Expression.NList nList) |> _DyadicFn
             (newTokens, Expression.DyadicFn(dyadicFn))
         | Token.Identifier string :: tail ->
             let newTokens, dyadicFn = (tail, Expression.NList(NList.NListIdentifier string)) |> _DyadicFn
