@@ -8,36 +8,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1764465c-92e4-43ba-9164-70acca95665a" name="Changes" comment="GradeUp and GradeDown apl functions created">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_interpreter/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_interpreter/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_interpreter/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_interpreter/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_interpreter/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.apl_interpreter/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apl_interpreter.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler.sln" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/apl_compiler.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/Lexer.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/Lexer.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/Parser.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/Parser.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/Runtime.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/Runtime.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/Symbols.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/Symbols.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/apl_compiler.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/apl_interpreter.fsproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/main.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/main.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler/test_program.apl" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/test_program.apl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler_ui/App.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler_ui/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler_ui/AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler_ui/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler_ui/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_compiler_ui/apl_compiler_ui.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/apl_interpreter_ui.csproj" afterDir="false" />
+    <list default="true" id="1764465c-92e4-43ba-9164-70acca95665a" name="Changes" comment="Got things ready for the GUI">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_interpreter/Runtime.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/Runtime.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +24,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="create_gradeUp_gradeDown_apl_functions" />
+        <entry key="$PROJECT_DIR$" value="create_dedicated_functions_for_gui" />
       </map>
     </option>
   </component>
@@ -59,7 +36,9 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/814525a895a4432f93b6cc620d5b9fedf87a90/72/1ef1b802/GridLength.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/11d8f187b5dd3859f77340f4af83a0edc44fb7964baf6b56e4848318b9cc1b/fslib-extra-pervasives.fs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5a91db30f58fd3c38afed3d8a755e224ceb184a67a2afe38d3b89dff2dc7e86/EventRoute.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/benjo/OneDrive/Documents/university/advanced programming/project/create_more_apl_functions/apl_compiler/Lexer.fs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/benjo/OneDrive/Documents/university/advanced programming/project/create_more_apl_functions/apl_compiler/Lexer.fs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/benjo/OneDrive/Documents/university/advanced programming/project/create_more_apl_functions/apl_compiler/Lexer.fs" root0="SKIP_HIGHLIGHTING" />
@@ -93,6 +72,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
+    "XThreadsFramesViewSplitterKey": "0.45884147",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -101,7 +81,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected=".NET Project.apl_interpreter">
+  <component name="RunManager" selected=".NET Project.apl_interpreter_ui">
     <configuration name="apl_interpreter" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/apl_interpreter/bin/Debug/net6.0/apl_interpreter.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -156,7 +136,7 @@
       <workItem from="1673628606913" duration="7578000" />
       <workItem from="1673688037530" duration="13369000" />
       <workItem from="1673703452359" duration="393000" />
-      <workItem from="1673703891292" duration="10562000" />
+      <workItem from="1673703891292" duration="14553000" />
     </task>
     <task id="LOCAL-00001" summary="Deal and roll functions created&#10;&#10;Also made small fixes to add and not functions">
       <created>1673627851191</created>
@@ -235,7 +215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673714925944</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Got things ready for the GUI">
+      <created>1673723612042</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1673723612042</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,7 +255,8 @@
     <MESSAGE value="Range and index generator implemented" />
     <MESSAGE value="Select function created" />
     <MESSAGE value="GradeUp and GradeDown apl functions created" />
-    <option name="LAST_COMMIT_MESSAGE" value="GradeUp and GradeDown apl functions created" />
+    <MESSAGE value="Got things ready for the GUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Got things ready for the GUI" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>
