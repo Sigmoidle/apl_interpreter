@@ -42,16 +42,18 @@ and Expression =
 and MonadicFn =
     | Not of Expression
     | Roll of Expression
+    | SignOf of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
     | Deal of Expression * Expression
+    | Multiply of Expression * Expression
 
 and NList =
     | NListIdentifier of string
     | NListValue of float list
 
-let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark ]
+let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark; Token.Multiplication ]
 
 let private parseError error = Exception(error)
 
@@ -120,6 +122,9 @@ let parse tokens =
         | Token.QuestionMark :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Deal(expression1, expression2))
+        | Token.Multiplication :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Multiply(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -131,6 +136,9 @@ let parse tokens =
         | Token.QuestionMark :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Roll(expression))
+        | Token.Multiplication :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.SignOf(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 

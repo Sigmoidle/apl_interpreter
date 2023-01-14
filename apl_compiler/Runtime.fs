@@ -28,6 +28,13 @@ let private _Add (list1: float list, list2: float list) =
         raise
         <| runtimeError $"The array: %A{list1} and %A{list2} are not compatible lengths for the add operation (+)"
 
+let private _Multiply (list1: float list, list2: float list) =
+    match list1.Length with
+    | _ when list1.Length = list2.Length -> Seq.map2 (*) list1 list2 |> Seq.toList
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list1} and %A{list2} are not compatible lengths for the multiply operation (×)"
+
 let rec private _Not (numList: float list) =
     let ContainsOnlyBinaryValue numList = numList |> Seq.forall (fun n -> n = 1.0 || n = 0.0)
 
@@ -69,6 +76,18 @@ let private _Deal (list1: float list, list2: float list) =
 
     Array.zeroCreate list1 |> Seq.map (fun _ -> Convert.ToDouble(random.Next(1, list2))) |> Seq.toList
 
+let private _SignOf (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the SignOf operation requires numbers (×)"
+    | _ ->
+        list
+        |> Seq.map (function
+            | 0.0 -> 0.0
+            | x when x > 0.0 -> 1.0
+            | x when x < 0.0 -> -1.0
+            | _ -> raise <| runtimeError "maths has failed")
+        |> Seq.toList
+
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
@@ -95,6 +114,7 @@ let runtime data =
         match monadicFn with
         | Not expression -> snd <| _Expression (expression, symbolTable, out) |> _Not
         | Roll expression -> snd <| _Expression (expression, symbolTable, out) |> _Roll
+        | SignOf expression -> snd <| _Expression (expression, symbolTable, out) |> _SignOf
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
@@ -104,5 +124,8 @@ let runtime data =
         | Deal (expression1, expression2) ->
             (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
             |> _Deal
+        | Multiply (expression1, expression2) ->
+            (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
+            |> _Multiply
 
     _Program (data, [ 0 ])
