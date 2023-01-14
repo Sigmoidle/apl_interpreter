@@ -41,6 +41,7 @@ and Expression =
 
 and MonadicFn =
     | Not of Expression
+    | Tally of Expression
     | Negate of Expression
     | Roll of Expression
     | SignOf of Expression
@@ -151,6 +152,9 @@ let parse tokens =
         | Token.QuestionMark :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Roll(expression))
+        | Token.Tally :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Tally(expression))
         | Token.Multiplication :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.SignOf(expression))

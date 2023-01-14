@@ -13,6 +13,7 @@ type Token =
     | Hyphen // -
     | Multiplication // ×
     | Division // ÷
+    | Tally // ≢
     //| LeftCeiling // ⌈
     //| LeftFloor // ⌊
     //| Asterisk // *
@@ -97,6 +98,7 @@ let rec private makeTokens tokenList characters =
     | ')' :: tail -> makeTokens (RightBracket :: tokenList) tail
     | '×' :: tail -> makeTokens (Multiplication :: tokenList) tail
     | '÷' :: tail -> makeTokens (Division :: tokenList) tail
+    | '≢' :: tail -> makeTokens (Tally :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)

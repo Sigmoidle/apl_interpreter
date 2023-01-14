@@ -9,6 +9,7 @@ open System.IO
 
 [<EntryPoint>]
 let main _ =
+    System.Console.OutputEncoding <- System.Text.Encoding.Unicode
     let aplProgram = File.ReadAllText("test_program.apl")
     let parseTree = aplProgram |> lex |> parse
     let runtimeData = parseTree |> createSymbols
