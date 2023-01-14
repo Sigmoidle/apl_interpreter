@@ -42,8 +42,8 @@ type Token =
     | Range // …
     //| UpwardPointingArrow // ↑
     //| DownwardPointingArrow // ↓
-    //| DeltaStile // ⍋
-    //| DelStile // ⍒
+    | GradeUp // ⍋
+    | GradeDown // ⍒
     | Slash // /
     //| SlashBar // ⌿
     //| Backslash // \
@@ -104,6 +104,8 @@ let rec private makeTokens tokenList characters =
     | '…' :: tail -> makeTokens (Range :: tokenList) tail
     | '⍳' :: tail -> makeTokens (Iota :: tokenList) tail
     | '⊇' :: tail -> makeTokens (Select :: tokenList) tail
+    | '⍋' :: tail -> makeTokens (GradeUp :: tokenList) tail
+    | '⍒' :: tail -> makeTokens (GradeDown :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)

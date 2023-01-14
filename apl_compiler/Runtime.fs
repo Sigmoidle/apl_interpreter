@@ -166,6 +166,28 @@ let private _Range (list1: float list, list2: float list) =
         raise
         <| runtimeError $"The array: %A{list1} or %A{list2} is not a scalar or isn't large enough and therefore is incompatible with the Range function (⍳)"
 
+let private _GradeUp (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
+    | _ ->
+        list
+        |> List.toArray
+        |> Array.mapi (fun x t -> (t, x + 1))
+        |> Array.sort
+        |> Array.map (fun (_, t: int) -> Convert.ToDouble t)
+        |> Seq.toList
+
+let private _GradeDown (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
+    | _ ->
+        list
+        |> List.toArray
+        |> Array.mapi (fun x t -> (t, x + 1))
+        |> Array.sortDescending
+        |> Array.map (fun (_, t: int) -> Convert.ToDouble t)
+        |> Seq.toList
+
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
@@ -201,6 +223,8 @@ let runtime data =
         | DivideReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _DivideReduce
         | SubtractReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _SubtractReduce
         | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
+        | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
+        | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with

@@ -51,6 +51,8 @@ and MonadicFn =
     | AddReduce of Expression
     | SubtractReduce of Expression
     | IndexGenerator of Expression
+    | GradeUp of Expression
+    | GradeDown of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
@@ -66,7 +68,13 @@ and NList =
     | NListValue of float list
 
 let dyadicFunctionTokenList =
-    [ Token.Plus; Token.QuestionMark; Token.Multiplication; Token.Division; Token.Hyphen; Token.Range; Token.Select ]
+    [ Token.Plus
+      Token.QuestionMark
+      Token.Multiplication
+      Token.Division
+      Token.Hyphen
+      Token.Range
+      Token.Select ]
 
 let private parseError error = Exception(error)
 
@@ -188,6 +196,12 @@ let parse tokens =
         | Token.Iota :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.IndexGenerator(expression))
+        | Token.GradeUp :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.GradeUp(expression))
+        | Token.GradeDown :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.GradeDown(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
