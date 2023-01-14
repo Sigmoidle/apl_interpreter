@@ -5,50 +5,53 @@ open System.IO
 
 // All Apl tokens
 type Token =
+    | AddReduce // +/
+    | DivideReduce // ÷/
+    | MultiplyReduce // ×/
     | Plus // +
     | Hyphen // -
     | Multiplication // ×
     | Division // ÷
-    | LeftCeiling // ⌈
-    | LeftFloor // ⌊
-    | Asterisk // *
-    | CircleStar // ⍟
-    | VerticalBar // |
+    //| LeftCeiling // ⌈
+    //| LeftFloor // ⌊
+    //| Asterisk // *
+    //| CircleStar // ⍟
+    //| VerticalBar // |
     | QuestionMark // ?
-    | WhiteCircle // ○
-    | ExclamationMark // !
+    //| WhiteCircle // ○
+    //| ExclamationMark // !
     | Tilde // ~
-    | LogicalAnd // ∧
-    | LogicalOr // ∨
-    | UpCaretTilde // ⍲
-    | DownCaretTilde // ⍱
-    | LessThan // <
-    | NotGreaterThan // ≤
-    | Equals // =
-    | NotLessThan // ≥
-    | GreaterThan // >
-    | NotEqual // ≠
-    | Rho // ⍴
-    | Comma // ,
-    | LeftSquareBracket // [
-    | RightSquareBracket // ]
-    | Iota // ⍳
-    | UpwardPointingArrow // ↑
-    | DownwardPointingArrow // ↓
-    | DeltaStile // ⍋
-    | DelStile // ⍒
+    //| LogicalAnd // ∧
+    //| LogicalOr // ∨
+    //| UpCaretTilde // ⍲
+    //| DownCaretTilde // ⍱
+    //| LessThan // <
+    //| NotGreaterThan // ≤
+    //| Equals // =
+    //| NotLessThan // ≥
+    //| GreaterThan // >
+    //| NotEqual // ≠
+    //| Rho // ⍴
+    //| Comma // ,
+    //| LeftSquareBracket // [
+    //| RightSquareBracket // ]
+    //| Iota // ⍳
+    //| UpwardPointingArrow // ↑
+    //| DownwardPointingArrow // ↓
+    //| DeltaStile // ⍋
+    //| DelStile // ⍒
     | Slash // /
-    | SlashBar // ⌿
-    | Backslash // \
-    | BackslashBar // ⍀
-    | CircleStile // ⌽
-    | CircledMinus // ⊖
-    | CircleBackslash // ⍉
-    | SmallElementOf // ∊
-    | Decode // ⊥
-    | Encode // ⊤
-    | FullStop // .
-    | OuterProduct // ∘.
+    //| SlashBar // ⌿
+    //| Backslash // \
+    //| BackslashBar // ⍀
+    //| CircleStile // ⌽
+    //| CircledMinus // ⊖
+    //| CircleBackslash // ⍉
+    //| SmallElementOf // ∊
+    //| Decode // ⊥
+    //| Encode // ⊤
+    //| FullStop // .
+    //| OuterProduct // ∘.
     | LeftBracket // (
     | RightBracket // )
     | Assign // ←
@@ -56,10 +59,10 @@ type Token =
     | Comment // ⍝
     | NewLine // \n
     // Types
-    | Number of float //
-    | String of string
+    | Number of float
+    //| String of string
     // Identifiers
-    | Identifier of string //
+    | Identifier of string
     // End of file
     | EndOfFile
 
@@ -80,35 +83,38 @@ let private isDigit c = Char.IsDigit c
 let rec private makeTokens tokenList characters =
     match characters with
     // Tokens
-    | '←' :: rest -> makeTokens (Assign :: tokenList) rest
-    | '+' :: rest -> makeTokens (Plus :: tokenList) rest
-    | '~' :: rest -> makeTokens (Tilde :: tokenList) rest
-    | '?' :: rest -> makeTokens (QuestionMark :: tokenList) rest
-    | '(' :: rest -> makeTokens (LeftBracket :: tokenList) rest
-    | ')' :: rest -> makeTokens (RightBracket :: tokenList) rest
-    | '×' :: rest -> makeTokens (Multiplication :: tokenList) rest
-    | '÷' :: rest -> makeTokens (Division :: tokenList) rest
+    | '×' :: '/' :: tail -> makeTokens (MultiplyReduce :: tokenList) tail
+    | '÷' :: '/' :: tail -> makeTokens (DivideReduce :: tokenList) tail
+    | '+' :: '/' :: tail -> makeTokens (AddReduce :: tokenList) tail
+    | '←' :: tail -> makeTokens (Assign :: tokenList) tail
+    | '+' :: tail -> makeTokens (Plus :: tokenList) tail
+    | '~' :: tail -> makeTokens (Tilde :: tokenList) tail
+    | '?' :: tail -> makeTokens (QuestionMark :: tokenList) tail
+    | '(' :: tail -> makeTokens (LeftBracket :: tokenList) tail
+    | ')' :: tail -> makeTokens (RightBracket :: tokenList) tail
+    | '×' :: tail -> makeTokens (Multiplication :: tokenList) tail
+    | '÷' :: tail -> makeTokens (Division :: tokenList) tail
     // Identifiers
-    | letter :: rest when isLetter letter ->
-        let newRest, calculatedString = makeStringToken "" (letter :: rest)
+    | letter :: tail when isLetter letter ->
+        let newRest, calculatedString = makeStringToken "" (letter :: tail)
 
         makeTokens (Identifier(calculatedString) :: tokenList) newRest
     // Numbers
-    | '¯' :: digit :: rest when isDigit digit ->
-        let newRest, number = makeNumberToken 0.0 (digit :: rest)
+    | '¯' :: digit :: tail when isDigit digit ->
+        let newRest, number = makeNumberToken 0.0 (digit :: tail)
 
         makeTokens (Number(-number) :: tokenList) newRest
-    | digit :: rest when isDigit digit ->
-        let newRest, number = makeNumberToken 0.0 (digit :: rest)
+    | digit :: tail when isDigit digit ->
+        let newRest, number = makeNumberToken 0.0 (digit :: tail)
 
         makeTokens (Number(number) :: tokenList) newRest
     // Whitespaces
-    | whitespace :: rest when isBlank whitespace -> makeTokens tokenList rest
+    | whitespace :: tail when isBlank whitespace -> makeTokens tokenList tail
     // NewLines
-    | newLine :: rest when isNewLine newLine -> makeTokens (NewLine :: tokenList) rest
+    | newLine :: tail when isNewLine newLine -> makeTokens (NewLine :: tokenList) tail
     // Comments
-    | '⍝' :: rest ->
-        let newRest = handleComment rest
+    | '⍝' :: tail ->
+        let newRest = handleComment tail
 
         makeTokens tokenList newRest
     // Empty character array
@@ -118,16 +124,16 @@ let rec private makeTokens tokenList characters =
 
 and calculateAfterDecimal float scale characters =
     match characters with
-    | '0' :: rest -> calculateAfterDecimal (float * 10.0) (scale * 10.0) rest
-    | '1' :: rest -> calculateAfterDecimal (float * 10.0 + 1.0) (scale * 10.0) rest
-    | '2' :: rest -> calculateAfterDecimal (float * 10.0 + 2.0) (scale * 10.0) rest
-    | '3' :: rest -> calculateAfterDecimal (float * 10.0 + 3.0) (scale * 10.0) rest
-    | '4' :: rest -> calculateAfterDecimal (float * 10.0 + 4.0) (scale * 10.0) rest
-    | '5' :: rest -> calculateAfterDecimal (float * 10.0 + 5.0) (scale * 10.0) rest
-    | '6' :: rest -> calculateAfterDecimal (float * 10.0 + 6.0) (scale * 10.0) rest
-    | '7' :: rest -> calculateAfterDecimal (float * 10.0 + 7.0) (scale * 10.0) rest
-    | '8' :: rest -> calculateAfterDecimal (float * 10.0 + 8.0) (scale * 10.0) rest
-    | '9' :: rest -> calculateAfterDecimal (float * 10.0 + 9.0) (scale * 10.0) rest
+    | '0' :: tail -> calculateAfterDecimal (float * 10.0) (scale * 10.0) tail
+    | '1' :: tail -> calculateAfterDecimal (float * 10.0 + 1.0) (scale * 10.0) tail
+    | '2' :: tail -> calculateAfterDecimal (float * 10.0 + 2.0) (scale * 10.0) tail
+    | '3' :: tail -> calculateAfterDecimal (float * 10.0 + 3.0) (scale * 10.0) tail
+    | '4' :: tail -> calculateAfterDecimal (float * 10.0 + 4.0) (scale * 10.0) tail
+    | '5' :: tail -> calculateAfterDecimal (float * 10.0 + 5.0) (scale * 10.0) tail
+    | '6' :: tail -> calculateAfterDecimal (float * 10.0 + 6.0) (scale * 10.0) tail
+    | '7' :: tail -> calculateAfterDecimal (float * 10.0 + 7.0) (scale * 10.0) tail
+    | '8' :: tail -> calculateAfterDecimal (float * 10.0 + 8.0) (scale * 10.0) tail
+    | '9' :: tail -> calculateAfterDecimal (float * 10.0 + 9.0) (scale * 10.0) tail
     // Empty character array
     | [] -> ([], float / scale)
     // Finished finding numbers
@@ -136,19 +142,19 @@ and calculateAfterDecimal float scale characters =
 and makeNumberToken float characters =
     match characters with
     // Number characters
-    | '0' :: rest -> makeNumberToken (float * 10.0) rest
-    | '1' :: rest -> makeNumberToken (float * 10.0 + 1.0) rest
-    | '2' :: rest -> makeNumberToken (float * 10.0 + 2.0) rest
-    | '3' :: rest -> makeNumberToken (float * 10.0 + 3.0) rest
-    | '4' :: rest -> makeNumberToken (float * 10.0 + 4.0) rest
-    | '5' :: rest -> makeNumberToken (float * 10.0 + 5.0) rest
-    | '6' :: rest -> makeNumberToken (float * 10.0 + 6.0) rest
-    | '7' :: rest -> makeNumberToken (float * 10.0 + 7.0) rest
-    | '8' :: rest -> makeNumberToken (float * 10.0 + 8.0) rest
-    | '9' :: rest -> makeNumberToken (float * 10.0 + 9.0) rest
+    | '0' :: tail -> makeNumberToken (float * 10.0) tail
+    | '1' :: tail -> makeNumberToken (float * 10.0 + 1.0) tail
+    | '2' :: tail -> makeNumberToken (float * 10.0 + 2.0) tail
+    | '3' :: tail -> makeNumberToken (float * 10.0 + 3.0) tail
+    | '4' :: tail -> makeNumberToken (float * 10.0 + 4.0) tail
+    | '5' :: tail -> makeNumberToken (float * 10.0 + 5.0) tail
+    | '6' :: tail -> makeNumberToken (float * 10.0 + 6.0) tail
+    | '7' :: tail -> makeNumberToken (float * 10.0 + 7.0) tail
+    | '8' :: tail -> makeNumberToken (float * 10.0 + 8.0) tail
+    | '9' :: tail -> makeNumberToken (float * 10.0 + 9.0) tail
     // Detect and calculate float number
-    | '.' :: digit :: rest when isDigit digit ->
-        let newRest, number = calculateAfterDecimal 0.0 1.0 (digit :: rest)
+    | '.' :: digit :: tail when isDigit digit ->
+        let newRest, number = calculateAfterDecimal 0.0 1.0 (digit :: tail)
 
         makeNumberToken (float + number) newRest
     // Empty character array
@@ -158,13 +164,13 @@ and makeNumberToken float characters =
 
 and handleComment characters =
     match characters with
-    | newline :: rest when isNewLine newline -> newline :: rest
+    | newline :: tail when isNewLine newline -> newline :: tail
     | [] -> characters
-    | _ :: rest -> handleComment rest
+    | _ :: tail -> handleComment tail
 
 and makeStringToken (calculatedString: string) characters =
     match characters with
-    | letter :: rest when isLetter letter || letter = '_' -> makeStringToken (calculatedString + string letter) rest
+    | letter :: tail when isLetter letter || letter = '_' -> makeStringToken (calculatedString + string letter) tail
     | [] -> ([], calculatedString)
     | _ -> (characters, calculatedString)
 
