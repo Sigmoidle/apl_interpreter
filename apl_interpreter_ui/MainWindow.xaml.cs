@@ -139,7 +139,7 @@ namespace apl_compiler_ui
 
                 try
                 {
-                    var output = Parser.parseAndEval(tokens);
+                    var output = main.interpret(line);
                     AddOutput(" < " + output.Item2, Brushes.Black);
                 }
                 catch (Exception ex)

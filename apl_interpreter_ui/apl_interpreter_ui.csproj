@@ -5,10 +5,11 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <RootNamespace>apl_compiler_ui</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\apl_compiler\apl_compiler.fsproj" />
+      <ProjectReference Include="..\apl_interpreter\apl_interpreter.fsproj" />
     </ItemGroup>
 
 </Project>
