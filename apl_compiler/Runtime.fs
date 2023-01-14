@@ -35,6 +35,16 @@ let private _Multiply (list1: float list, list2: float list) =
         raise
         <| runtimeError $"The array: %A{list1} and %A{list2} are not compatible lengths for the multiply operation (×)"
 
+let private _Divide (list1: float list, list2: float list) =
+    match list1.Length with
+    | _ when List.contains 0.0 list2 ->
+        raise
+        <| runtimeError $"The array: %A{list2} contains one or more 0s which will cause a divide by 0 error for the division operation (÷)"
+    | _ when list1.Length = list2.Length -> Seq.map2 (/) list1 list2 |> Seq.toList
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list1} and %A{list2} are not compatible lengths for the division operation (÷)"
+
 let rec private _Not (numList: float list) =
     let ContainsOnlyBinaryValue numList = numList |> Seq.forall (fun n -> n = 1.0 || n = 0.0)
 
@@ -88,6 +98,16 @@ let private _SignOf (list: float list) =
             | _ -> raise <| runtimeError "maths has failed")
         |> Seq.toList
 
+let private _Reciprocal (list: float list) =
+    match list with
+    | [] ->
+        raise
+        <| runtimeError $"The array: %A{list} is empty and the Reciprocal operation requires numbers (÷)"
+    | _ when List.contains 0.0 list ->
+        raise
+        <| runtimeError $"The array: %A{list} contains one or more 0s which will cause a divide by 0 error for the Reciprocal function(÷)"
+    | _ -> list |> Seq.map (fun x -> 1.0 / x) |> Seq.toList
+
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
@@ -112,20 +132,24 @@ let runtime data =
 
     and _MonadicFn (monadicFn, symbolTable, out) =
         match monadicFn with
-        | Not expression -> snd <| _Expression (expression, symbolTable, out) |> _Not
-        | Roll expression -> snd <| _Expression (expression, symbolTable, out) |> _Roll
-        | SignOf expression -> snd <| _Expression (expression, symbolTable, out) |> _SignOf
+        | Not expression -> _Expression (expression, symbolTable, out) |> snd |> _Not
+        | Roll expression -> _Expression (expression, symbolTable, out) |> snd |> _Roll
+        | SignOf expression -> _Expression (expression, symbolTable, out) |> snd |> _SignOf
+        | Reciprocal expression -> _Expression (expression, symbolTable, out) |> snd |> _Reciprocal
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
         | Add (expression1, expression2) ->
-            (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Add
         | Deal (expression1, expression2) ->
-            (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Deal
         | Multiply (expression1, expression2) ->
-            (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Multiply
+        | Divide (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Divide
 
     _Program (data, [ 0 ])
