@@ -50,6 +50,7 @@ and MonadicFn =
     | MultiplyReduce of Expression
     | AddReduce of Expression
     | SubtractReduce of Expression
+    | IndexGenerator of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
@@ -57,13 +58,14 @@ and DyadicFn =
     | Multiply of Expression * Expression
     | Divide of Expression * Expression
     | Subtract of Expression * Expression
+    | Range of Expression * Expression
 
 and NList =
     | NListIdentifier of string
     | NListValue of float list
 
 let dyadicFunctionTokenList =
-    [ Token.Plus; Token.QuestionMark; Token.Multiplication; Token.Division; Token.Hyphen ]
+    [ Token.Plus; Token.QuestionMark; Token.Multiplication; Token.Division; Token.Hyphen; Token.Range ]
 
 let private parseError error = Exception(error)
 
@@ -141,6 +143,9 @@ let parse tokens =
         | Token.Hyphen :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Subtract(expression1, expression2))
+        | Token.Range :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Range(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -176,6 +181,9 @@ let parse tokens =
         | Token.SubtractReduce :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.SubtractReduce(expression))
+        | Token.Iota :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.IndexGenerator(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
