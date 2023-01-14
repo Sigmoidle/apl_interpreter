@@ -93,19 +93,16 @@ let runtime data =
 
     and _MonadicFn (monadicFn, symbolTable, out) =
         match monadicFn with
-        | Not maybeChain -> _MaybeChain (maybeChain, symbolTable, out) |> _ConvertNListToValue symbolTable |> _Not
-        | Roll maybeChain -> _MaybeChain (maybeChain, symbolTable, out) |> _ConvertNListToValue symbolTable |> _Roll
+        | Not expression -> snd <| _Expression (expression, symbolTable, out) |> _Not
+        | Roll expression -> snd <| _Expression (expression, symbolTable, out) |> _Roll
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
-        | Add (nList, maybeChain) -> (nList, _MaybeChain (maybeChain, symbolTable, out)) |> _ConvertNListsToValues symbolTable |> _Add
-        | Deal (nList, maybeChain) -> (nList, _MaybeChain (maybeChain, symbolTable, out)) |> _ConvertNListsToValues symbolTable |> _Deal
-
-    and _MaybeChain (maybeChain, symbolTable, out) =
-        match maybeChain with
-        | NoChain numList -> numList
-        | Chain expression ->
-            let _, nList = _Expression (expression, symbolTable, out)
-            NList.NListValue nList
+        | Add (expression1, expression2) ->
+            (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
+            |> _Add
+        | Deal (expression1, expression2) ->
+            (snd <| _Expression (expression1, symbolTable, out), snd <| _Expression (expression2, symbolTable, out))
+            |> _Deal
 
     _Program (data, [ 0 ])

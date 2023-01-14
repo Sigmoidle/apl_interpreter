@@ -6,28 +6,27 @@ open Lexer
 (*
 <PROGRAM> ::=
             | EndOfFile
+            | NewLine: <PROGRAM>
             | <EXPRESSION> <PROGRAM>
 
 <EXPRESSION> ::= 
+            | Assign: string * <EXPRESSION>
             | <MonadicFn>
             | <DyadicFn>
             | <NList>
             
 <MonadicFn> ::=
-            | Not <MaybeChain>
+            | Not <EXPRESSION>
+            | Roll <EXPRESSION>
             
 <DyadicFn> ::=
-            | Add <NList> <MaybeChain>
-
-<MaybeChain> ::= 
-            | <NList>
-            | <EXPRESSION>
+            | Add <EXPRESSION> <EXPRESSION>
+            | Deal <EXPRESSION> <EXPRESSION>
 
 <NList> ::=
             | list of floats
+            | string
  *)
-
-let functionTokenList = [ Token.Plus; Token.Tilde ]
 
 type Program =
     | Expression of Expression * Program
@@ -41,29 +40,39 @@ and Expression =
     | NList of NList
 
 and MonadicFn =
-    | Not of MaybeChain
-    | Roll of MaybeChain
+    | Not of Expression
+    | Roll of Expression
 
 and DyadicFn =
-    | Add of NList * MaybeChain
-    | Deal of NList * MaybeChain
-
-and MaybeChain =
-    | NoChain of NList
-    | Chain of Expression
+    | Add of Expression * Expression
+    | Deal of Expression * Expression
 
 and NList =
     | NListIdentifier of string
     | NListValue of float list
 
+let dyadicFunctionTokenList = [ Token.Plus; Token.QuestionMark ]
+
 let private parseError error = Exception(error)
 
-let rec private isNewLineNext tokens =
+let rec private isNewLineOrEndNext tokens =
     match tokens with
-    | Token.Number _ :: tail -> isNewLineNext tail
+    | Token.Number _ :: tail -> isNewLineOrEndNext tail
     | Token.NewLine :: _ -> true
     | Token.EndOfFile :: _ -> true
+    | [] -> true
     | _ -> false
+
+let private gotoMatchingBracket tokens =
+    let rec go tokens acc depth =
+        match tokens with
+        | Token.RightBracket :: _ when depth = 0 -> (tokens, List.rev acc)
+        | Token.RightBracket :: tail when depth <> 0 -> go tail (Token.RightBracket :: acc) (depth - 1)
+        | Token.LeftBracket :: tail -> go tail (Token.LeftBracket :: acc) (depth + 1)
+        | token :: tail -> go tail (token :: acc) depth
+        | _ -> raise <| parseError "The brackets are unbalanced!"
+
+    go tokens [] 0
 
 let parse tokens =
     let rec _Program tokens =
@@ -76,58 +85,54 @@ let parse tokens =
 
     and _Expression tokens =
         match tokens with
+        | Token.LeftBracket :: tail ->
+            let newTokens, accumulation = gotoMatchingBracket tail
+
+            match newTokens with
+            | _ :: token :: tail when List.contains token dyadicFunctionTokenList ->
+                let tokens, dyadicFn = (token :: tail, snd <| _Expression accumulation) |> _DyadicFn
+                (tokens, Expression.DyadicFn(dyadicFn))
+            | _ :: tail -> (tail, snd <| _Expression accumulation)
+            | _ -> ([], snd <| _Expression accumulation)
         | Token.Identifier name :: Token.Assign :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, Expression.Assign(name, expression))
-        | Token.Identifier name :: tail when isNewLineNext tail -> (tail, Expression.NList(NList.NListIdentifier name))
-        | Token.Number _ :: tail when isNewLineNext tail ->
+        | Token.Identifier name :: tail when isNewLineOrEndNext tail -> (tail, Expression.NList(NList.NListIdentifier name))
+        | Token.Number _ :: tail when isNewLineOrEndNext tail ->
             let newTokens, nList = _NList tokens
             (newTokens, Expression.NList(nList))
         | Token.Number _ :: _ ->
-            let newTokens, dyadicFn = (_NList >> _DyadicFn) tokens
+            let newTokens, nList = tokens |> _NList
+            let newTokens, dyadicFn = (newTokens, Expression.NList nList) |> _DyadicFn
             (newTokens, Expression.DyadicFn(dyadicFn))
         | Token.Identifier string :: tail ->
-            let newTokens, dyadicFn = (tail, NList.NListIdentifier string) |> _DyadicFn
+            let newTokens, dyadicFn = (tail, Expression.NList(NList.NListIdentifier string)) |> _DyadicFn
             (newTokens, Expression.DyadicFn(dyadicFn))
         | _ ->
             let newTokens, monadicFn = _MonadicFn tokens
             (newTokens, Expression.MonadicFn(monadicFn))
 
-    and _DyadicFn (tokens, nList1st) =
+    and _DyadicFn (tokens, expression1) =
         match tokens with
         | Token.Plus :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, DyadicFn.Add(nList1st, maybeChain))
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Add(expression1, expression2))
         | Token.QuestionMark :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, DyadicFn.Deal(nList1st, maybeChain))
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Deal(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
     and _MonadicFn tokens =
         match tokens with
         | Token.Tilde :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, MonadicFn.Not(maybeChain))
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Not(expression))
         | Token.QuestionMark :: tail ->
-            let newTokens, maybeChain = _MaybeChain tail
-            (newTokens, MonadicFn.Roll(maybeChain))
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Roll(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
-
-    and _MaybeChain tokens =
-        match tokens with
-        | Token.Number _ :: _ ->
-            let newTokens, nList = _NList tokens
-
-            match newTokens with
-            | token :: _ when List.contains token functionTokenList ->
-                let tokens, expression = _Expression tokens
-                (tokens, MaybeChain.Chain(expression))
-            | _ -> (newTokens, MaybeChain.NoChain(nList))
-        | _ ->
-            let newTokens, expression = _Expression tokens
-            (newTokens, MaybeChain.Chain(expression))
 
     and _NList tokens =
         match tokens with
