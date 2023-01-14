@@ -30,7 +30,7 @@ let private _Add (list1: float list, list2: float list) =
 
 let private _Subtract (list1: float list, list2: float list) =
     match list1.Length with
-    | 1 -> list2 |> Seq.map (fun float -> float - list1.Head) |> Seq.toList
+    | 1 when list2.Length <> 1 -> list2 |> Seq.map (fun float -> float - list1.Head) |> Seq.toList
     | _ when list1.Length = list2.Length -> Seq.map2 (-) list1 list2 |> Seq.toList
     | _ ->
         raise
@@ -46,7 +46,7 @@ let private _Multiply (list1: float list, list2: float list) =
 
 let private _Divide (list1: float list, list2: float list) =
     match list1.Length with
-    | 1 when list1.Head <> 0 -> list2 |> Seq.map (fun float -> float / list1.Head) |> Seq.toList
+    | 1 when list1.Head <> 0 && list2.Length <> 1 -> list2 |> Seq.map (fun float -> float / list1.Head) |> Seq.toList
     | _ when List.contains 0.0 list2 ->
         raise
         <| runtimeError $"The array: %A{list2} contains one or more 0s which will cause a divide by 0 error for the division operation (÷)"
@@ -143,6 +143,8 @@ let private _Negate (list: float list) =
     | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
     | _ -> list |> Seq.map (fun x -> x * -1.0) |> Seq.toList
 
+let private _Tally (list: float list) = [ Convert.ToDouble list.Length ]
+
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
@@ -169,6 +171,7 @@ let runtime data =
         match monadicFn with
         | Not expression -> _Expression (expression, symbolTable, out) |> snd |> _Not
         | Roll expression -> _Expression (expression, symbolTable, out) |> snd |> _Roll
+        | Tally expression -> _Expression (expression, symbolTable, out) |> snd |> _Tally
         | Negate expression -> _Expression (expression, symbolTable, out) |> snd |> _Negate
         | SignOf expression -> _Expression (expression, symbolTable, out) |> snd |> _SignOf
         | Reciprocal expression -> _Expression (expression, symbolTable, out) |> snd |> _Reciprocal
