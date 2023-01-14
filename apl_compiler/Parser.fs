@@ -43,11 +43,13 @@ and MonadicFn =
     | Not of Expression
     | Roll of Expression
     | SignOf of Expression
+    | Reciprocal of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
     | Deal of Expression * Expression
     | Multiply of Expression * Expression
+    | Divide of Expression * Expression
 
 and NList =
     | NListIdentifier of string
@@ -125,6 +127,9 @@ let parse tokens =
         | Token.Multiplication :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Multiply(expression1, expression2))
+        | Token.Division :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Divide(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -139,6 +144,9 @@ let parse tokens =
         | Token.Multiplication :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.SignOf(expression))
+        | Token.Division :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Reciprocal(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
