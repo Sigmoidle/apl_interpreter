@@ -98,6 +98,21 @@ let private _SignOf (list: float list) =
             | _ -> raise <| runtimeError "maths has failed")
         |> Seq.toList
 
+let private _AddReduce (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the reduce operation requires numbers"
+    | _ -> [ list |> List.reduceBack (fun a b -> a + b) ]
+
+let private _MultiplyReduce (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the reduce operation requires numbers"
+    | _ -> [ list |> List.reduceBack (fun a b -> a * b) ]
+
+let private _DivideReduce (list: float list) =
+    match list with
+    | [] -> raise <| runtimeError $"The array: %A{list} is empty and the reduce operation requires numbers"
+    | _ -> [ list |> List.reduceBack (fun a b -> a / b) ]
+
 let private _Reciprocal (list: float list) =
     match list with
     | [] ->
@@ -136,6 +151,9 @@ let runtime data =
         | Roll expression -> _Expression (expression, symbolTable, out) |> snd |> _Roll
         | SignOf expression -> _Expression (expression, symbolTable, out) |> snd |> _SignOf
         | Reciprocal expression -> _Expression (expression, symbolTable, out) |> snd |> _Reciprocal
+        | AddReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _AddReduce
+        | MultiplyReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _MultiplyReduce
+        | DivideReduce expression -> _Expression (expression, symbolTable, out) |> snd |> _DivideReduce
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with

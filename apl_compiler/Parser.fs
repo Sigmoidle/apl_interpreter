@@ -44,6 +44,9 @@ and MonadicFn =
     | Roll of Expression
     | SignOf of Expression
     | Reciprocal of Expression
+    | DivideReduce of Expression
+    | MultiplyReduce of Expression
+    | AddReduce of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
@@ -147,6 +150,15 @@ let parse tokens =
         | Token.Division :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Reciprocal(expression))
+        | Token.MultiplyReduce :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.MultiplyReduce(expression))
+        | Token.DivideReduce :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.DivideReduce(expression))
+        | Token.AddReduce :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.AddReduce(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
