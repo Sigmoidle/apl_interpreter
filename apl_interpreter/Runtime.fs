@@ -25,6 +25,8 @@ let rec private _ConvertNListsToValues (symbolTable: Map<string, float list>) (n
     | NListValue value1, NListIdentifier string2 -> (value1, _TryGetNListFromSymbolTable symbolTable string2)
     | NListIdentifier string1, NListIdentifier string2 -> (_TryGetNListFromSymbolTable symbolTable string1, _TryGetNListFromSymbolTable symbolTable string2)
 
+
+
 let private _Select (list1: float list, list2: float list) =
     match list1 |> List.reduce max, list1 |> List.reduce min with
     | max, min when (max - 1.0) < list2.Length && (min - 1.0) >= 0 -> List.map (fun (index: float) -> list2[Convert.ToInt32(index - 1.0)]) list1
@@ -163,6 +165,23 @@ let private _IndexGenerator (list: float list) =
     | _ ->
         raise
         <| runtimeError $"The array: %A{list} is not a scalar or the number isn't large enough and therefore is incompatible with the Index Generator function (⍳)"
+
+let private _Magnitude (list: float list) =
+    match list.Length with
+    | 1 when list.Length >= 1 -> list |> Seq.map abs |> Seq.toList
+    | _ ->
+        raise
+        <| runtimeError $"The array: %A{list} is empty therefore is incompatible with the Magnitude (|)"
+
+let private _Modulus (list1: float list, list2: float list) =
+    match list1.Length with
+    | 1 when list1.Head = 0.0 ->
+        raise
+        <| runtimeError $"Modulus (|) can't work if the LHS is 0. LHS: %A{list1.Head}. Divide by 0 error"
+    | 1 when list2.Length >= 1 -> list2 |> Seq.map (fun num -> num % list1.Head) |> Seq.toList
+    | _ ->
+        raise
+        <| runtimeError $"Either the Array: %A{list1} is not a scalar or the Array: %A{list2} is not a scalar or vector. Modulus(|) requires these."
 
 let private _Range (list1: float list, list2: float list) =
     match list1.Length, list2.Length with
@@ -317,6 +336,7 @@ let runtime data =
         | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
         | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
         | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
+        | Magnitude expression -> _Expression (expression, symbolTable, out) |> snd |> _Magnitude
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
@@ -371,5 +391,8 @@ let runtime data =
         | NotEqual (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _EqualityOperation dyadicFn
+        | Modulus (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Modulus
 
     _Program (data, [ 0 ])
