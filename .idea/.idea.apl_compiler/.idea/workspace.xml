@@ -8,13 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1764465c-92e4-43ba-9164-70acca95665a" name="Changes" comment="Got things ready for the GUI">
+    <list default="true" id="1764465c-92e4-43ba-9164-70acca95665a" name="Changes" comment="Made big progress on updating the GUI">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_interpreter/Runtime.fs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter/Runtime.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/App.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +42,7 @@
     <setting file="file://$PROJECT_DIR$/apl_interpreter/Runtime.fs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apl_interpreter/Symbols.fs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apl_interpreter/main.fs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/benjo/OneDrive/Documents/university/advanced programming/project/create_more_apl_functions/apl_interpreter_ui/App.xaml" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apl_interpreter_ui/App.xaml.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apl_interpreter_ui/AssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apl_interpreter_ui/MainWindow.xaml" root0="FORCE_HIGHLIGHTING" />
@@ -136,7 +132,7 @@
       <workItem from="1673628606913" duration="7578000" />
       <workItem from="1673688037530" duration="13369000" />
       <workItem from="1673703452359" duration="393000" />
-      <workItem from="1673703891292" duration="14553000" />
+      <workItem from="1673703891292" duration="14906000" />
     </task>
     <task id="LOCAL-00001" summary="Deal and roll functions created&#10;&#10;Also made small fixes to add and not functions">
       <created>1673627851191</created>
@@ -222,7 +218,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673723612042</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Made big progress on updating the GUI">
+      <created>1673727810894</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1673727810894</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -256,7 +259,8 @@
     <MESSAGE value="Select function created" />
     <MESSAGE value="GradeUp and GradeDown apl functions created" />
     <MESSAGE value="Got things ready for the GUI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Got things ready for the GUI" />
+    <MESSAGE value="Made big progress on updating the GUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made big progress on updating the GUI" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>
