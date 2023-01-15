@@ -250,11 +250,29 @@ let private _EqualityOperation (operationType: DyadicFn) (list1: float list, lis
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
-        | EndOfFile -> (data, out)
+        | EndOfProgram -> (data, out)
         | NewLine newProgram -> _Program ({ data with _program = newProgram }, out)
+        | Statement (statement, newProgram) ->
+            let newSymbolTable, newOut = _Statement (statement, data._symbolTable, out)
+            _Program ({ data with _program = newProgram; _symbolTable = newSymbolTable }, newOut)
         | Expression (expression, newProgram) ->
             let newSymbolTable, newOut = _Expression (expression, data._symbolTable, out)
             _Program ({ data with _program = newProgram; _symbolTable = newSymbolTable }, newOut)
+
+    and _Statement (statement, symbolTable, out) =
+        match statement with
+        | IfElse (expression, program1, program2) ->
+            let newSymbolTable, newOut = _Expression (expression, symbolTable, out)
+
+            let (data: RuntimeData), newOut =
+                match newOut with
+                | [ 1.0 ] -> _Program ({ _program = program1; _symbolTable = newSymbolTable }, newOut)
+                | [ 0.0 ] -> _Program ({ _program = program2; _symbolTable = newSymbolTable }, newOut)
+                | _ ->
+                    raise
+                    <| runtimeError $"If statements require a Boolean value as their condition, %A{newOut} is not Boolean."
+
+            (data._symbolTable, newOut)
 
     and _Expression (expression, symbolTable, out) =
         match expression with
