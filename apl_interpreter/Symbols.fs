@@ -26,6 +26,10 @@ let createSymbols (program: Program) : RuntimeData =
             let data = _Program { _program = program1; _symbolTable = newSymbolTable }
             let newData = _Program { _program = program2; _symbolTable = data._symbolTable }
             newData._symbolTable
+        | While (expression, program) ->
+            let newSymbolTable = _Expression (expression, symbolTable)
+            let data = _Program { _program = program; _symbolTable = newSymbolTable }
+            data._symbolTable
 
     and _Expression (expression, symbolTable) =
         match expression with

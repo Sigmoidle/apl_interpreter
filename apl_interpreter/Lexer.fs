@@ -72,6 +72,8 @@ type Token =
     | If
     | Else
     | End
+    | While
+    | EndWhile
 
 let private isIndicationOfArray t =
     match t with
@@ -90,9 +92,11 @@ let private isDigit c = Char.IsDigit c
 let rec private makeTokens tokenList characters =
     match characters with
     // Tokens
-    | 'I' :: 'f' :: tail -> makeTokens (If :: tokenList) tail
-    | 'E' :: 'l' :: 's' :: 'e' :: tail -> makeTokens (Else :: tokenList) tail
-    | 'E' :: 'n' :: 'd' :: tail -> makeTokens (End :: tokenList) tail
+    | ':' :: 'W' :: 'h' :: 'i' :: 'l' :: 'e' :: tail -> makeTokens (While :: tokenList) tail
+    | ':' :: 'E' :: 'n' :: 'd' :: 'W' :: 'h' :: 'i' :: 'l' :: 'e' :: tail -> makeTokens (EndWhile :: tokenList) tail
+    | ':' :: 'I' :: 'f' :: tail -> makeTokens (If :: tokenList) tail
+    | ':' :: 'E' :: 'l' :: 's' :: 'e' :: tail -> makeTokens (Else :: tokenList) tail
+    | ':' :: 'E' :: 'n' :: 'd' :: tail -> makeTokens (End :: tokenList) tail
     | '×' :: '/' :: tail -> makeTokens (MultiplyReduce :: tokenList) tail
     | '÷' :: '/' :: tail -> makeTokens (DivideReduce :: tokenList) tail
     | '+' :: '/' :: tail -> makeTokens (AddReduce :: tokenList) tail

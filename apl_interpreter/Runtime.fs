@@ -273,6 +273,21 @@ let runtime data =
                     <| runtimeError $"If statements require a Boolean value as their condition, %A{newOut} is not Boolean."
 
             (data._symbolTable, newOut)
+        | While (expression, program) ->
+            let rec _while condition symbolTable programOut =
+                match condition with
+                | [ 1.0 ] ->
+                    let data, programOut = _Program ({ _program = program; _symbolTable = symbolTable }, condition)
+                    let newSymbolTable, expressionOut = _Expression (expression, data._symbolTable, programOut)
+                    _while expressionOut newSymbolTable programOut
+                | [ 0.0 ] -> (symbolTable, programOut)
+                | _ ->
+                    raise
+                    <| runtimeError $"While statements require a Boolean value as their condition, %A{condition} is not Boolean."
+
+            let newSymbolTable, conditionOut = _Expression (expression, symbolTable, out)
+            _while conditionOut newSymbolTable conditionOut
+
 
     and _Expression (expression, symbolTable, out) =
         match expression with
