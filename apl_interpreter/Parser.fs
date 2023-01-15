@@ -62,6 +62,16 @@ and DyadicFn =
     | Subtract of Expression * Expression
     | Range of Expression * Expression
     | Select of Expression * Expression
+    | LogicalAnd of Expression * Expression
+    | LogicalOr of Expression * Expression
+    | LogicalNand of Expression * Expression
+    | LogicalNor of Expression * Expression
+    | LessThan of Expression * Expression
+    | LessOrEqual of Expression * Expression
+    | Equals of Expression * Expression
+    | GreaterOrEqual of Expression * Expression
+    | GreaterThan of Expression * Expression
+    | NotEqual of Expression * Expression
 
 and NList =
     | NListIdentifier of string
@@ -74,7 +84,17 @@ let dyadicFunctionTokenList =
       Token.Division
       Token.Hyphen
       Token.Range
-      Token.Select ]
+      Token.Select
+      Token.LogicalAnd
+      Token.LogicalOr
+      Token.LogicalNand
+      Token.LogicalNor
+      Token.LessThan
+      Token.LessOrEqual
+      Token.Equals
+      Token.GreaterOrEqual
+      Token.GreaterThan
+      Token.NotEqual ]
 
 let private parseError error = Exception(error)
 
@@ -158,6 +178,36 @@ let parse tokens =
         | Token.Select :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Select(expression1, expression2))
+        | Token.LogicalAnd :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.LogicalAnd(expression1, expression2))
+        | Token.LogicalOr :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.LogicalOr(expression1, expression2))
+        | Token.LogicalNand :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.LogicalNand(expression1, expression2))
+        | Token.LogicalNor :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.LogicalNor(expression1, expression2))
+        | Token.LessThan :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.LessThan(expression1, expression2))
+        | Token.LessOrEqual :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.LessOrEqual(expression1, expression2))
+        | Token.Equals :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Equals(expression1, expression2))
+        | Token.GreaterOrEqual :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.GreaterOrEqual(expression1, expression2))
+        | Token.GreaterThan :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.GreaterThan(expression1, expression2))
+        | Token.NotEqual :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.NotEqual(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
