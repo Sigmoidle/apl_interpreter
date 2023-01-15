@@ -20,55 +20,53 @@
         </ToolBarTray>
 
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="400px" />
+            </Grid.ColumnDefinitions>
 
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="400px" />
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
                 <!-- APL input -->
                 <TextBox Name="Apl" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" FontSize="20"
                          GotFocus="Apl_OnGotFocus">
                 </TextBox>
+                
+                <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" VerticalAlignment="Center"></GridSplitter>
 
-                <GridSplitter Grid.Column="1" Width="5" ShowsPreview="True" HorizontalAlignment="Center"></GridSplitter>
+                <!-- output / repl -->
+                <RichTextBox Grid.Row="2" Name="Output" FontFamily="Consolas" IsReadOnly="True" FontSize="20">
+                    <FlowDocument />
+                </RichTextBox>
 
-                <!-- side panel -->
-                <TabControl Grid.Column="2">
-                    <TabItem Header="Tokens">
-                        <ListBox Name="LexerOutput"></ListBox>
-                    </TabItem>
-                    <TabItem Header="Syntax Tree">
-                        <TreeView>
-                            <TreeViewItem Header="Test" IsExpanded="True">
-                                <TreeViewItem Header="Test 2"></TreeViewItem>
-                            </TreeViewItem>
-                        </TreeView>
-                    </TabItem>
-                    <TabItem Header="Symbol Table">
-
-                    </TabItem>
-                </TabControl>
+                <TextBox Grid.Row="3" Name="ReplInput" FontFamily="Consolas" FontSize="20" KeyDown="ReplInputOnKeyDown"
+                         GotFocus="ReplInput_OnGotFocus">
+                </TextBox>
             </Grid>
+            
+            <!-- side panel -->
+            <TabControl Grid.Column="2">
+                <TabItem Header="Tokens">
+                    <ListBox Name="LexerOutput"></ListBox>
+                </TabItem>
+                <TabItem Header="Syntax Tree">
+                    <TreeView>
+                        <TreeViewItem Header="Test" IsExpanded="True">
+                            <TreeViewItem Header="Test 2"></TreeViewItem>
+                        </TreeViewItem>
+                    </TreeView>
+                </TabItem>
+                <TabItem Header="Symbol Table">
 
-            <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" VerticalAlignment="Center"></GridSplitter>
-
-            <!-- output / repl -->
-            <RichTextBox Grid.Row="2" Name="Output" FontFamily="Consolas" IsReadOnly="True" FontSize="20">
-                <FlowDocument />
-            </RichTextBox>
-
-            <TextBox Grid.Row="3" Name="ReplInput" FontFamily="Consolas" FontSize="20" KeyDown="ReplInputOnKeyDown"
-                     GotFocus="ReplInput_OnGotFocus">
-            </TextBox>
+                </TabItem>
+            </TabControl>
         </Grid>
     </DockPanel>
 </Window>
