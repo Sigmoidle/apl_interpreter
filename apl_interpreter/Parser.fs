@@ -59,6 +59,7 @@ and MonadicFn =
     | IndexGenerator of Expression
     | GradeUp of Expression
     | GradeDown of Expression
+    | Magnitude of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
@@ -78,6 +79,7 @@ and DyadicFn =
     | GreaterOrEqual of Expression * Expression
     | GreaterThan of Expression * Expression
     | NotEqual of Expression * Expression
+    | Modulus of Expression * Expression
 
 and NList =
     | NListIdentifier of string
@@ -100,7 +102,8 @@ let dyadicFunctionTokenList =
       Token.Equals
       Token.GreaterOrEqual
       Token.GreaterThan
-      Token.NotEqual ]
+      Token.NotEqual
+      Token.VerticalBar ]
 
 let statementTokenList = [ Token.If; Token.While ]
 
@@ -270,6 +273,9 @@ let parse tokens =
         | Token.NotEqual :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.NotEqual(expression1, expression2))
+        | Token.VerticalBar :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Modulus(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -314,6 +320,9 @@ let parse tokens =
         | Token.GradeDown :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.GradeDown(expression))
+        | Token.VerticalBar :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Magnitude(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 

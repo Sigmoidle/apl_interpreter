@@ -19,7 +19,7 @@ type Token =
     //| LeftFloor // ⌊
     //| Asterisk // *
     //| CircleStar // ⍟
-    //| VerticalBar // |
+    | VerticalBar // |
     | QuestionMark // ?
     //| WhiteCircle // ○
     //| ExclamationMark // !
@@ -126,6 +126,7 @@ let rec private makeTokens tokenList characters =
     | '≥' :: tail -> makeTokens (GreaterOrEqual :: tokenList) tail
     | '>' :: tail -> makeTokens (GreaterThan :: tokenList) tail
     | '≠' :: tail -> makeTokens (NotEqual :: tokenList) tail
+    | '|' :: tail -> makeTokens (VerticalBar :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)
