@@ -1,0 +1,74 @@
+⍝ An APL program to find the mean of any vector
+list ← 5 3 9 2 1
+mean ← (+/list)÷(≢list)
+mean
+
+-------------------
+
+⍝ an APL sorting algorithm
+to_sort ← 3 6 1 8 4 2 5 9
+sorted ← (⍋ to_sort) ⊇ to_sort
+sorted
+
+-----------------------
+
+⍝ while loop statements counting to 100
+counter ← 0
+other_counter ← 0
+:While counter < 100
+    other_counter ← 0
+    :While other_counter < 10
+        counter ← counter + 1
+        other_counter ← other_counter + 1
+    :EndWhile    
+:EndWhile
+counter
+
+
+----------------------
+
+⍝ prime number tester
+⍝ Output: 1 = not prime number 0 = prime
+
+maybe_prime ← 29 ⍝ Number to test
+
+prime ← 1
+:If maybe_prime = 1
+    prime ← 0
+:Else
+    counter ← 1
+    :While counter < (maybe_prime - 1)
+        counter ← counter + 1
+        :If (counter|maybe_prime) = 0
+            prime ← 0
+            counter ← maybe_prime
+        :Else :End
+    :EndWhile
+:End
+
+prime ⍝ Output
+
+
+----------------------
+
+⍝ fibonacci sequence
+
+number_of_terms ← 10
+
+first_term ← 0
+second_term ← 1
+sequence ← first_term , second_term
+
+:If (number_of_terms ≥ 0)
+    :If (number_of_terms ≠ 1)
+        count ← 2
+        :While count < number_of_terms
+            sequence ← sequence , (+/((((≢sequence) - 1),(≢sequence))⊇sequence))
+            count ← count + 1
+        :EndWhile
+    :Else
+        sequence ← 1
+    :End
+:Else :End
+
+sequence

@@ -35,7 +35,7 @@ type Token =
     | GreaterThan // >
     | NotEqual // ≠
     //| Rho // ⍴
-    //| Comma // ,
+    | Comma // ,
     //| LeftSquareBracket // [
     //| RightSquareBracket // ]
     | Iota // ⍳
@@ -127,6 +127,7 @@ let rec private makeTokens tokenList characters =
     | '>' :: tail -> makeTokens (GreaterThan :: tokenList) tail
     | '≠' :: tail -> makeTokens (NotEqual :: tokenList) tail
     | '|' :: tail -> makeTokens (VerticalBar :: tokenList) tail
+    | ',' :: tail -> makeTokens (Comma :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)

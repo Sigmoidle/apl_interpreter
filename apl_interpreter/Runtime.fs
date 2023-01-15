@@ -190,6 +190,8 @@ let private _Range (list1: float list, list2: float list) =
         raise
         <| runtimeError $"The array: %A{list1} or %A{list2} is not a scalar or isn't large enough and therefore is incompatible with the Range function (⍳)"
 
+let private _Catenate (list1: float list, list2: float list) = list1 @ list2
+
 let private _GradeUp (list: float list) =
     match list with
     | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
@@ -394,5 +396,8 @@ let runtime data =
         | Modulus (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Modulus
+        | Catenate (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Catenate
 
     _Program (data, [ 0 ])

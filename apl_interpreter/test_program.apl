@@ -1,20 +1,21 @@
-﻿⍝ prime number tester
-⍝ Output: 1 = not prime number 0 = prime
+﻿⍝ fibonacci sequence
 
-maybe_prime ← 29 ⍝ Number to test
+number_of_terms ← 10
 
-prime ← 1
-:If maybe_prime = 1
-    prime ← 0
-:Else
-    counter ← 1
-    :While counter < (maybe_prime - 1)
-        counter ← counter + 1
-        :If (counter|maybe_prime) = 0
-            prime ← 0
-            counter ← maybe_prime
-        :Else :End
-    :EndWhile
-:End
+first_term ← 0
+second_term ← 1
+sequence ← first_term , second_term
 
-prime ⍝ Output
+:If (number_of_terms ≥ 0)
+    :If (number_of_terms ≠ 1)
+        count ← 2
+        :While count < number_of_terms
+            sequence ← sequence , (+/((((≢sequence) - 1),(≢sequence))⊇sequence))
+            count ← count + 1
+        :EndWhile
+    :Else
+        sequence ← 1
+    :End
+:Else :End
+
+sequence
