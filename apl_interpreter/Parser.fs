@@ -80,6 +80,7 @@ and DyadicFn =
     | GreaterThan of Expression * Expression
     | NotEqual of Expression * Expression
     | Modulus of Expression * Expression
+    | Catenate of Expression * Expression
 
 and NList =
     | NListIdentifier of string
@@ -103,7 +104,8 @@ let dyadicFunctionTokenList =
       Token.GreaterOrEqual
       Token.GreaterThan
       Token.NotEqual
-      Token.VerticalBar ]
+      Token.VerticalBar
+      Token.Comma ]
 
 let statementTokenList = [ Token.If; Token.While ]
 
@@ -276,6 +278,9 @@ let parse tokens =
         | Token.VerticalBar :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Modulus(expression1, expression2))
+        | Token.Comma :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Catenate(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
