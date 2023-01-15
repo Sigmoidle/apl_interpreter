@@ -64,7 +64,7 @@
                     </TreeView>
                 </TabItem>
                 <TabItem Header="Symbol Table">
-
+                    <DataGrid Name="SymbolTable" IsReadOnly="True"></DataGrid>
                 </TabItem>
             </TabControl>
         </Grid>
