@@ -30,8 +30,11 @@ open Lexer
 
 type Program =
     | Expression of Expression * Program
+    | Statement of Statement * Program
     | NewLine of Program
-    | EndOfFile
+    | EndOfProgram
+
+and Statement = IfElse of Expression * Program * Program
 
 and Expression =
     | Assign of string * Expression
@@ -96,6 +99,8 @@ let dyadicFunctionTokenList =
       Token.GreaterThan
       Token.NotEqual ]
 
+let statementTokenList = [ Token.If ]
+
 let private parseError error = Exception(error)
 
 let rec private isNewLineOrEndNext tokens =
@@ -117,14 +122,50 @@ let private gotoMatchingBracket tokens =
 
     go tokens [] 0
 
+let private grabTokensUntilElse tokens =
+    let rec go tokens acc depth =
+        match tokens with
+        | Token.Else :: tail when depth = 0 -> (tail, List.rev acc)
+        | Token.Else :: tail when depth <> 0 -> go tail (Token.Else :: acc) (depth - 1)
+        | Token.If :: tail -> go tail (Token.If :: acc) (depth + 1)
+        | token :: tail -> go tail (token :: acc) depth
+        | _ -> raise <| parseError "An If statement is incomplete, they must all contain 'Else' and end with 'End'"
+
+    go tokens [] 0
+
+let private grabTokensUntilEnd tokens =
+    let rec go tokens acc depth =
+        match tokens with
+        | Token.End :: tail when depth = 0 -> (tail, List.rev acc)
+        | Token.End :: tail when depth <> 0 -> go tail (Token.End :: acc) (depth - 1)
+        | Token.If :: tail -> go tail (Token.If :: acc) (depth + 1)
+        | token :: tail -> go tail (token :: acc) depth
+        | _ -> raise <| parseError "An If statement is incomplete, they must all contain 'Else' and end with 'End'"
+
+    go tokens [] 0
+
+
 let parse tokens =
     let rec _Program tokens =
         match tokens with
-        | Token.EndOfFile :: _ -> Program.EndOfFile
+        | Token.EndOfFile :: _ -> Program.EndOfProgram
+        | [] -> Program.EndOfProgram
         | Token.NewLine :: tail -> Program.NewLine(_Program tail)
+        | head :: _ when List.contains head statementTokenList ->
+            let newTokens, statement = _Statement tokens
+            Program.Statement(statement, _Program newTokens)
         | _ ->
             let newTokens, expression = _Expression tokens
             Program.Expression(expression, _Program newTokens)
+
+    and _Statement tokens =
+        match tokens with
+        | Token.If :: tail ->
+            let newTokens, boolExpression = _Expression tail
+            let newTokens, program1Tokens = grabTokensUntilElse newTokens
+            let newTokens, program2Tokens = grabTokensUntilEnd newTokens
+            (newTokens, Statement.IfElse(boolExpression, _Program program1Tokens, _Program program2Tokens))
+        | token -> raise <| parseError $"Statement token Expected. The token %A{token} does is not a statement token"
 
     and _Expression tokens =
         match tokens with

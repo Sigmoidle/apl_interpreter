@@ -10,11 +10,22 @@ let createSymbols (program: Program) : RuntimeData =
 
     let rec _Program (data: RuntimeData) =
         match data._program with
-        | Program.EndOfFile -> { data with _program = originalProgram }
+        | Program.EndOfProgram -> { data with _program = originalProgram }
         | Program.NewLine newProgram -> _Program { data with _program = newProgram }
+        | Program.Statement (statement, program) ->
+            let newSymbolTable = _Statement (statement, data._symbolTable)
+            _Program { data with _program = program; _symbolTable = newSymbolTable }
         | Program.Expression (expression, program) ->
             let newSymbolTable = _Expression (expression, data._symbolTable)
             _Program { data with _program = program; _symbolTable = newSymbolTable }
+
+    and _Statement (statement, symbolTable) =
+        match statement with
+        | IfElse (expression, program1, program2) ->
+            let newSymbolTable = _Expression (expression, symbolTable)
+            let data = _Program { _program = program1; _symbolTable = newSymbolTable }
+            let newData = _Program { _program = program2; _symbolTable = data._symbolTable }
+            newData._symbolTable
 
     and _Expression (expression, symbolTable) =
         match expression with
