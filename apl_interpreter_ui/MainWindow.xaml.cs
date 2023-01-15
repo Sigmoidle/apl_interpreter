@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -130,15 +133,51 @@ public partial class MainWindow
             LexerOutput.Items.Add(item);
         }
 
+        Parser.Program program;
+
         try
         {
-            var output = main.interpret(code);
+            program = Parser.parse(tokens);
+        }
+        catch (Exception ex)
+        {
+            AddOutput(" < " + ex.Message, Brushes.Red);
+            return;
+        }
+
+        Symbols.RuntimeData symbols;
+
+        try
+        {
+            symbols = Symbols.createSymbols(program);
+        }
+        catch (Exception ex)
+        {
+            AddOutput(" < " + ex.Message, Brushes.Red);
+            return;
+        }
+
+        Tuple<Symbols.RuntimeData, FSharpList<Double>> output;
+
+        try
+        {
+            output = Runtime.runtime(symbols);
             AddOutput(" < " + "[ " + string.Join("; ", output.Item2) + " ]", Brushes.Black);
         }
         catch (Exception ex)
         {
             AddOutput(" < " + ex.Message, Brushes.Red);
+            return;
         }
+        
+        var symbolTableSource = new List<SymbolTableEntry>();
+
+        foreach (var entry in output.Item1._symbolTable)
+        {
+            symbolTableSource.Add(new SymbolTableEntry() { Identifier = entry.Key, Value = string.Join(",", entry.Value) });
+        }
+
+        SymbolTable.ItemsSource = symbolTableSource;
     }
 
     private void RunOnClick(object sender, RoutedEventArgs e)
@@ -216,4 +255,10 @@ public partial class MainWindow
     {
         _replFocused = true;
     }
+}
+
+class SymbolTableEntry
+{
+    public string Identifier { get; set; } = null!;
+    public string Value { get; set; } = null!;
 }
