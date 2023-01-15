@@ -8,17 +8,22 @@ let private runtimeError error = Exception(error)
 
 let random = Random()
 
+let private _TryGetNListFromSymbolTable (symbolTable: Map<string, float list>) string =
+    match symbolTable.TryFind(string) with
+    | Some nList -> nList
+    | None -> raise <| runtimeError $"The identifier %A{string} doesn't exist in the symbol table"
+
 let rec private _ConvertNListToValue (symbolTable: Map<string, float list>) nList =
     match nList with
     | NListValue value -> value
-    | NListIdentifier string -> symbolTable.Item(string)
+    | NListIdentifier string -> _TryGetNListFromSymbolTable symbolTable string
 
 let rec private _ConvertNListsToValues (symbolTable: Map<string, float list>) (nList1, nList2) =
     match (nList1, nList2) with
     | NListValue value1, NListValue value2 -> (value1, value2)
-    | NListIdentifier string1, NListValue value2 -> (symbolTable.Item(string1), value2)
-    | NListValue value1, NListIdentifier string2 -> (value1, symbolTable.Item(string2))
-    | NListIdentifier string1, NListIdentifier string2 -> (symbolTable.Item(string1), symbolTable.Item(string2))
+    | NListIdentifier string1, NListValue value2 -> (_TryGetNListFromSymbolTable symbolTable string1, value2)
+    | NListValue value1, NListIdentifier string2 -> (value1, _TryGetNListFromSymbolTable symbolTable string2)
+    | NListIdentifier string1, NListIdentifier string2 -> (_TryGetNListFromSymbolTable symbolTable string1, _TryGetNListFromSymbolTable symbolTable string2)
 
 let private _Select (list1: float list, list2: float list) =
     match list1 |> List.reduce max, list1 |> List.reduce min with
