@@ -34,13 +34,16 @@ type Program =
     | NewLine of Program
     | EndOfProgram
 
-and Statement = IfElse of Expression * Program * Program
 
 and Expression =
     | Assign of string * Expression
     | MonadicFn of MonadicFn
     | DyadicFn of DyadicFn
     | NList of NList
+
+and Statement =
+    | IfElse of Expression * Program * Program
+    | While of Expression * Program
 
 and MonadicFn =
     | Not of Expression
@@ -99,7 +102,7 @@ let dyadicFunctionTokenList =
       Token.GreaterThan
       Token.NotEqual ]
 
-let statementTokenList = [ Token.If ]
+let statementTokenList = [ Token.If; Token.While ]
 
 let private parseError error = Exception(error)
 
@@ -129,7 +132,9 @@ let private grabTokensUntilElse tokens =
         | Token.Else :: tail when depth <> 0 -> go tail (Token.Else :: acc) (depth - 1)
         | Token.If :: tail -> go tail (Token.If :: acc) (depth + 1)
         | token :: tail -> go tail (token :: acc) depth
-        | _ -> raise <| parseError "An If statement is incomplete, they must all contain 'Else' and end with 'End'"
+        | _ ->
+            raise
+            <| parseError "An If statement is incomplete, they must all contain ':Else' and end with ':End'"
 
     go tokens [] 0
 
@@ -140,10 +145,22 @@ let private grabTokensUntilEnd tokens =
         | Token.End :: tail when depth <> 0 -> go tail (Token.End :: acc) (depth - 1)
         | Token.If :: tail -> go tail (Token.If :: acc) (depth + 1)
         | token :: tail -> go tail (token :: acc) depth
-        | _ -> raise <| parseError "An If statement is incomplete, they must all contain 'Else' and end with 'End'"
+        | _ ->
+            raise
+            <| parseError "An If statement is incomplete, they must all contain ':Else' and end with ':End'"
 
     go tokens [] 0
 
+let private grabTokensUntilEndWhile tokens =
+    let rec go tokens acc depth =
+        match tokens with
+        | Token.EndWhile :: tail when depth = 0 -> (tail, List.rev acc)
+        | Token.EndWhile :: tail when depth <> 0 -> go tail (Token.EndWhile :: acc) (depth - 1)
+        | Token.While :: tail -> go tail (Token.While :: acc) (depth + 1)
+        | token :: tail -> go tail (token :: acc) depth
+        | _ -> raise <| parseError "A While statement is incomplete, they must all end with ':EndWhile'"
+
+    go tokens [] 0
 
 let parse tokens =
     let rec _Program tokens =
@@ -165,6 +182,10 @@ let parse tokens =
             let newTokens, program1Tokens = grabTokensUntilElse newTokens
             let newTokens, program2Tokens = grabTokensUntilEnd newTokens
             (newTokens, Statement.IfElse(boolExpression, _Program program1Tokens, _Program program2Tokens))
+        | Token.While :: tail ->
+            let newTokens, boolExpression = _Expression tail
+            let newTokens, programTokens = grabTokensUntilEndWhile newTokens
+            (newTokens, Statement.While(boolExpression, _Program programTokens))
         | token -> raise <| parseError $"Statement token Expected. The token %A{token} does is not a statement token"
 
     and _Expression tokens =
