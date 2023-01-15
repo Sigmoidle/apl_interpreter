@@ -8,9 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1764465c-92e4-43ba-9164-70acca95665a" name="Changes" comment="Made big progress on updating the GUI">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.apl_compiler/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="1764465c-92e4-43ba-9164-70acca95665a" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -132,7 +130,7 @@
       <workItem from="1673628606913" duration="7578000" />
       <workItem from="1673688037530" duration="13369000" />
       <workItem from="1673703452359" duration="393000" />
-      <workItem from="1673703891292" duration="14906000" />
+      <workItem from="1673703891292" duration="15201000" />
     </task>
     <task id="LOCAL-00001" summary="Deal and roll functions created&#10;&#10;Also made small fixes to add and not functions">
       <created>1673627851191</created>
@@ -225,7 +223,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673727810894</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Unfinished UI commit for merge">
+      <created>1673788649587</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1673788649587</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,7 +265,8 @@
     <MESSAGE value="GradeUp and GradeDown apl functions created" />
     <MESSAGE value="Got things ready for the GUI" />
     <MESSAGE value="Made big progress on updating the GUI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made big progress on updating the GUI" />
+    <MESSAGE value="Unfinished UI commit for merge" />
+    <option name="LAST_COMMIT_MESSAGE" value="Unfinished UI commit for merge" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

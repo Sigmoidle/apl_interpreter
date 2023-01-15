@@ -24,16 +24,16 @@ type Token =
     //| WhiteCircle // ○
     //| ExclamationMark // !
     | Tilde // ~
-    //| LogicalAnd // ∧
-    //| LogicalOr // ∨
-    //| UpCaretTilde // ⍲
-    //| DownCaretTilde // ⍱
-    //| LessThan // <
-    //| NotGreaterThan // ≤
-    //| Equals // =
-    //| NotLessThan // ≥
-    //| GreaterThan // >
-    //| NotEqual // ≠
+    | LogicalAnd // ∧
+    | LogicalOr // ∨
+    | LogicalNand // ⍲
+    | LogicalNor // ⍱
+    | LessThan // <
+    | LessOrEqual // ≤
+    | Equals // =
+    | GreaterOrEqual // ≥
+    | GreaterThan // >
+    | NotEqual // ≠
     //| Rho // ⍴
     //| Comma // ,
     //| LeftSquareBracket // [
@@ -45,7 +45,6 @@ type Token =
     | GradeUp // ⍋
     | GradeDown // ⍒
     | Slash // /
-    //| SlashBar // ⌿
     //| Backslash // \
     //| BackslashBar // ⍀
     //| CircleStile // ⌽
@@ -106,6 +105,16 @@ let rec private makeTokens tokenList characters =
     | '⊇' :: tail -> makeTokens (Select :: tokenList) tail
     | '⍋' :: tail -> makeTokens (GradeUp :: tokenList) tail
     | '⍒' :: tail -> makeTokens (GradeDown :: tokenList) tail
+    | '∧' :: tail -> makeTokens (LogicalAnd :: tokenList) tail
+    | '∨' :: tail -> makeTokens (LogicalOr :: tokenList) tail
+    | '⍲' :: tail -> makeTokens (LogicalNand :: tokenList) tail
+    | '⍱' :: tail -> makeTokens (LogicalNor :: tokenList) tail
+    | '<' :: tail -> makeTokens (LessThan :: tokenList) tail
+    | '≤' :: tail -> makeTokens (LessOrEqual :: tokenList) tail
+    | '=' :: tail -> makeTokens (Equals :: tokenList) tail
+    | '≥' :: tail -> makeTokens (GreaterOrEqual :: tokenList) tail
+    | '>' :: tail -> makeTokens (GreaterThan :: tokenList) tail
+    | '≠' :: tail -> makeTokens (NotEqual :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)

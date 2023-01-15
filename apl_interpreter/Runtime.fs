@@ -193,6 +193,60 @@ let private _GradeDown (list: float list) =
         |> Array.map (fun (_, t: int) -> Convert.ToDouble t)
         |> Seq.toList
 
+let private _BooleanOperation (operationType: DyadicFn) (list1: float list, list2: float list) =
+    if list1.Length <> 1 || list2.Length <> 1 then
+        raise
+        <| runtimeError $"Boolean Operations require scalar binary numbers, either %A{list1} or %A{list2} isn't a scalar"
+
+    if not ((list1.Head = 1.0 || list1.Head = 0.0) && (list2.Head = 1.0 || list2.Head = 0.0)) then
+        raise
+        <| runtimeError $"Boolean Operations require scalar binary numbers, either %A{list1} or %A{list2} isn't a boolean"
+
+    let num1, num2 = list1.Head, list2.Head
+
+    match operationType with
+    | LogicalAnd _ ->
+        (num1, num2)
+        |> function
+            | 1.0, 1.0 -> [ 1.0 ]
+            | _ -> [ 0.0 ]
+    | LogicalOr _ ->
+        (num1, num2)
+        |> function
+            | 0.0, 0.0 -> [ 0.0 ]
+            | _ -> [ 1.0 ]
+    | LogicalNand _ ->
+        (num1, num2)
+        |> function
+            | 1.0, 1.0 -> [ 0.0 ]
+            | _ -> [ 1.0 ]
+    | LogicalNor _ ->
+        (num1, num2)
+        |> function
+            | 0.0, 0.0 -> [ 1.0 ]
+            | _ -> [ 0.0 ]
+    | operation -> raise <| runtimeError $"An incorrect boolean operation: %A{operation} was detected"
+
+let private _ComparisonOperation (operationType: DyadicFn) (list1: float list, list2: float list) =
+    if list1.Length <> 1 || list2.Length <> 1 then
+        raise
+        <| runtimeError $"Comparison Operations require scalar numbers, either %A{list1} or %A{list2} isn't a scalar"
+
+    let num1, num2 = list1.Head, list2.Head
+
+    match operationType with
+    | LessThan _ -> [ num1 < num2 |> Convert.ToDouble ]
+    | LessOrEqual _ -> [ num1 <= num2 |> Convert.ToDouble ]
+    | GreaterOrEqual _ -> [ num1 >= num2 |> Convert.ToDouble ]
+    | GreaterThan _ -> [ num1 > num2 |> Convert.ToDouble ]
+    | operation -> raise <| runtimeError $"An incorrect comparison operation: %A{operation} was detected"
+
+let private _EqualityOperation (operationType: DyadicFn) (list1: float list, list2: float list) =
+    match operationType with
+    | Equals _ -> [ list1 = list2 |> Convert.ToDouble ]
+    | NotEqual _ -> [ list1 = list2 |> not |> Convert.ToDouble ]
+    | operation -> raise <| runtimeError $"An incorrect equality operation: %A{operation} was detected"
+
 let runtime data =
     let rec _Program (data, out) =
         match data._program with
@@ -254,5 +308,35 @@ let runtime data =
         | Select (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Select
+        | LogicalAnd (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _BooleanOperation dyadicFn
+        | LogicalOr (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _BooleanOperation dyadicFn
+        | LogicalNand (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _BooleanOperation dyadicFn
+        | LogicalNor (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _BooleanOperation dyadicFn
+        | LessThan (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _ComparisonOperation dyadicFn
+        | LessOrEqual (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _ComparisonOperation dyadicFn
+        | GreaterOrEqual (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _ComparisonOperation dyadicFn
+        | GreaterThan (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _ComparisonOperation dyadicFn
+        | Equals (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _EqualityOperation dyadicFn
+        | NotEqual (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _EqualityOperation dyadicFn
 
     _Program (data, [ 0 ])
