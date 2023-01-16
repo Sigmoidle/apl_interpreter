@@ -192,6 +192,20 @@ let private _Range (list1: float list, list2: float list) =
 
 let private _Catenate (list1: float list, list2: float list) = list1 @ list2
 
+let private _Floor (list: float list) = List.map floor list
+
+let private _Minimum (list1: float list, list2: float list) =
+    match list1.Length, list2.Length with
+    | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the minimum operation requires numbers"
+    | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the minimum operation requires numbers"
+    | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
+        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+    | _, _ when list1.Length = 1 || list2.Length = 1 ->
+        let minVal = List.min (list1 @ list2)
+        let maxLength = max list1.Length list2.Length
+        [for i in 0 .. maxLength-1 -> minVal]
+    | _, _ -> List.map2 min list1 list2
+
 let private _GradeUp (list: float list) =
     match list with
     | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
@@ -338,6 +352,7 @@ let runtime data =
         | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
         | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
         | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
+        | Floor expression -> _Expression (expression, symbolTable, out) |> snd |> _Floor
         | Magnitude expression -> _Expression (expression, symbolTable, out) |> snd |> _Magnitude
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
@@ -396,6 +411,9 @@ let runtime data =
         | Modulus (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Modulus
+        | Minimum (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Minimum
         | Catenate (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Catenate
