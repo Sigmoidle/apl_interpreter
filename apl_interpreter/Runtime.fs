@@ -190,6 +190,21 @@ let private _Modulus (list1: float list, list2: float list) =
         raise
         <| runtimeError $"Either the Array: %A{list1} is not a scalar or the Array: %A{list2} is not a scalar or vector. Modulus(|) requires these."
 
+let private _Ceiling (list: float list) = List.map (fun (x: float) -> ceil x) list
+
+let private _Maximum (list1: float list, list2: float list) =
+    match list1.Length, list2.Length with
+    | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the maximum operation requires numbers"
+    | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the maximum operation requires numbers"
+    | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
+        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+    | _, _ when list1.Length = 1 || list2.Length = 1 ->
+        let maxVal = List.max (list1 @ list2)
+        let maxLength = max list1.Length list2.Length
+        [for i in 0 .. maxLength-1 -> maxVal]
+    | _, _ -> List.map2 max list1 list2
+
+
 let private _Range (list1: float list, list2: float list) =
     match list1.Length, list2.Length with
     | 1, 1 when list1.Head >= 0.0 && (list1.Head + 1.0) < list2.Head -> [ Convert.ToDouble(Convert.ToInt32 list1.Head) .. (Convert.ToInt32 list2.Head) ]
@@ -198,6 +213,20 @@ let private _Range (list1: float list, list2: float list) =
         <| runtimeError $"The array: %A{list1} or %A{list2} is not a scalar or isn't large enough and therefore is incompatible with the Range function (⍳)"
 
 let private _Catenate (list1: float list, list2: float list) = list1 @ list2
+
+let private _Floor (list: float list) = List.map floor list
+
+let private _Minimum (list1: float list, list2: float list) =
+    match list1.Length, list2.Length with
+    | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the minimum operation requires numbers"
+    | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the minimum operation requires numbers"
+    | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
+        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+    | _, _ when list1.Length = 1 || list2.Length = 1 ->
+        let minVal = List.min (list1 @ list2)
+        let maxLength = max list1.Length list2.Length
+        [for i in 0 .. maxLength-1 -> minVal]
+    | _, _ -> List.map2 min list1 list2
 
 let private _GradeUp (list: float list) =
     match list with
@@ -220,6 +249,18 @@ let private _GradeDown (list: float list) =
         |> Array.sortDescending
         |> Array.map (fun (_, t: int) -> Convert.ToDouble t)
         |> Seq.toList
+
+let private _Exponential (list: float list) = List.map (fun x -> Math.Exp x) list
+
+let private _Power (list1: float list, list2: float list) =
+    match list1.Length, list2.Length with
+    | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the power operation requires numbers"
+    | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the power operation requires numbers"
+    | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
+        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+    | 1, _ -> List.map (fun x -> list1.Head ** x) list2
+    | _, 1 -> List.map (fun x -> x ** list2.Head) list1
+    | _, _ -> List.map2 (fun x y-> x ** y) list1 list2
 
 let private _BooleanOperation (operationType: DyadicFn) (list1: float list, list2: float list) =
     if list1.Length <> 1 || list2.Length <> 1 then
@@ -345,7 +386,10 @@ let runtime data =
         | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
         | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
         | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
+        | Ceiling expression -> _Expression (expression, symbolTable, out) |> snd |> _Ceiling
+        | Floor expression -> _Expression (expression, symbolTable, out) |> snd |> _Floor
         | Magnitude expression -> _Expression (expression, symbolTable, out) |> snd |> _Magnitude
+        | Exponential expression -> _Expression (expression, symbolTable, out) |> snd |> _Exponential
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with
@@ -403,10 +447,20 @@ let runtime data =
         | Modulus (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Modulus
+        | Maximum (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Maximum
+        | Minimum (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Minimum
         | Catenate (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Catenate
         | Membership (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Membership
+        | Power (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Power
+
     _Program (data, [ 0 ])
