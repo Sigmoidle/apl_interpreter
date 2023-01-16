@@ -50,7 +50,7 @@ type Token =
     //| CircleStile // ⌽
     //| CircledMinus // ⊖
     //| CircleBackslash // ⍉
-    //| SmallElementOf // ∊
+    | SmallElementOf // ∊
     //| Decode // ⊥
     //| Encode // ⊤
     //| FullStop // .
@@ -129,6 +129,7 @@ let rec private makeTokens tokenList characters =
     | '|' :: tail -> makeTokens (VerticalBar :: tokenList) tail
     | '⌊' :: tail -> makeTokens (LeftFloor :: tokenList) tail
     | ',' :: tail -> makeTokens (Comma :: tokenList) tail
+    | '∊' :: tail -> makeTokens (SmallElementOf :: tokenList) tail
     | '⌈' :: tail -> makeTokens (LeftCeiling :: tokenList) tail
     | '*' :: tail -> makeTokens (Asterisk :: tokenList) tail
     // Identifiers

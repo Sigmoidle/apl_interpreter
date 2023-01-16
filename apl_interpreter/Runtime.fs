@@ -157,6 +157,13 @@ let private _Negate (list: float list) =
     | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
     | _ -> list |> Seq.map (fun x -> x * -1.0) |> Seq.toList
 
+let private _Membership (list1: float list, list2: float list) =
+    match list1, list2 with
+    | _, _ when list1.Length = 0 || list2.Length = 0 ->
+        raise <| runtimeError $"The arguments must have size larger than 0"
+    | _, _ ->
+        List.map (fun el -> if (List.contains el list2) then 1.0 else 0.0) list1
+
 let private _Tally (list: float list) = [ Convert.ToDouble list.Length ]
 
 let private _IndexGenerator (list: float list) =
@@ -449,6 +456,9 @@ let runtime data =
         | Catenate (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Catenate
+        | Membership (expression1, expression2) ->
+            (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
+            |> _Membership
         | Power (expression1, expression2) ->
             (_Expression (expression1, symbolTable, out) |> snd, _Expression (expression2, symbolTable, out) |> snd)
             |> _Power

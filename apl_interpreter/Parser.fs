@@ -84,6 +84,7 @@ and DyadicFn =
     | NotEqual of Expression * Expression
     | Modulus of Expression * Expression
     | Catenate of Expression * Expression
+    | Membership of Expression * Expression
     | Maximum of Expression * Expression
     | Power of Expression * Expression
     | Minimum of Expression * Expression
@@ -111,6 +112,7 @@ let dyadicFunctionTokenList =
       Token.GreaterThan
       Token.NotEqual
       Token.VerticalBar
+      Token.SmallElementOf
       Token.LeftCeiling ]
       Token.Asterisk ]
       Token.LeftFloor
@@ -290,6 +292,9 @@ let parse tokens =
         | Token.Comma :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Catenate(expression1, expression2))
+        | Token.SmallElementOf :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Membership(expression1, expression2))
         | Token.LeftCeiling :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Maximum(expression1,expression2))
