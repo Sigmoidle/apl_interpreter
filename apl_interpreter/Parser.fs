@@ -61,6 +61,7 @@ and MonadicFn =
     | GradeDown of Expression
     | Magnitude of Expression
     | Exponential of Expression
+    | Floor of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
@@ -83,6 +84,7 @@ and DyadicFn =
     | Modulus of Expression * Expression
     | Catenate of Expression * Expression
     | Power of Expression * Expression
+    | Minimum of Expression * Expression
 
 and NList =
     | NListIdentifier of string
@@ -107,8 +109,9 @@ let dyadicFunctionTokenList =
       Token.GreaterThan
       Token.NotEqual
       Token.VerticalBar
-      Token.Comma
       Token.Asterisk ]
+      Token.LeftFloor
+      Token.Comma ]
 
 let statementTokenList = [ Token.If; Token.While ]
 
@@ -287,6 +290,9 @@ let parse tokens =
         | Token.Asterisk :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Power(expression1, expression2))
+        | Token.LeftFloor :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Minimum(expression1, expression2))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised dyadic function"
         | _ -> raise <| parseError "Empty token list when processing dyadic function"
 
@@ -337,6 +343,9 @@ let parse tokens =
         | Token.Asterisk :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Exponential(expression))
+        | Token.LeftFloor :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Floor(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
