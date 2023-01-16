@@ -18,5 +18,6 @@ Global
 		{5BBE2E18-AE9B-4571-8192-388F00044FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BBE2E18-AE9B-4571-8192-388F00044FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BBE2E18-AE9B-4571-8192-388F00044FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BBE2E18-AE9B-4571-8192-388F00044FAA}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

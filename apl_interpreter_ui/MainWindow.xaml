@@ -21,50 +21,73 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
+                <!-- <ColumnDefinition Width="*" /> -->
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="400px" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="5"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
 
                 <!-- APL input -->
                 <TextBox Name="Apl" FontFamily="Consolas" AcceptsReturn="True" AcceptsTab="True" FontSize="20"
-                         GotFocus="Apl_OnGotFocus">
+                         GotFocus="Apl_OnGotFocus" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                         Grid.Row="0">
                 </TextBox>
-                
-                <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" VerticalAlignment="Center"></GridSplitter>
+
+                <GridSplitter Grid.Row="1" Height="5" ShowsPreview="True" VerticalAlignment="Stretch"
+                              ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch">
+                </GridSplitter>
 
                 <!-- output / repl -->
-                <RichTextBox Grid.Row="2" Name="Output" FontFamily="Consolas" IsReadOnly="True" FontSize="20">
+                <RichTextBox Grid.Row="2" Name="Output" FontFamily="Consolas" IsReadOnly="True" FontSize="20"
+                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <FlowDocument />
                 </RichTextBox>
 
                 <TextBox Grid.Row="3" Name="ReplInput" FontFamily="Consolas" FontSize="20" KeyDown="ReplInputOnKeyDown"
-                         GotFocus="ReplInput_OnGotFocus">
+                         GotFocus="ReplInput_OnGotFocus" HorizontalAlignment="Stretch">
                 </TextBox>
             </Grid>
-            
+
+            <GridSplitter Grid.Column="1" Width="5" ShowsPreview="True" HorizontalAlignment="Stretch"></GridSplitter>
+
             <!-- side panel -->
-            <TabControl Grid.Column="2">
+            <TabControl Grid.Column="2" HorizontalAlignment="Stretch">
                 <TabItem Header="Tokens">
                     <ListBox Name="LexerOutput"></ListBox>
                 </TabItem>
                 <TabItem Header="Syntax Tree">
-                    <TreeView>
-                        <TreeViewItem Header="Test" IsExpanded="True">
-                            <TreeViewItem Header="Test 2"></TreeViewItem>
-                        </TreeViewItem>
-                    </TreeView>
+                    <RichTextBox Name="SyntaxTree" FontFamily="Consolas" IsReadOnly="True" FontSize="15"
+                                 HorizontalScrollBarVisibility="Visible">
+                        <FlowDocument PageWidth="4000" />
+                    </RichTextBox>
                 </TabItem>
                 <TabItem Header="Symbol Table">
                     <DataGrid Name="SymbolTable" IsReadOnly="True"></DataGrid>
+                </TabItem>
+                <TabItem Header="Help">
+                    <DataGrid IsReadOnly="True" Name="HelpTable" HorizontalAlignment="Stretch">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="Auto" Header="Symbol" Binding="{Binding Symbol}"></DataGridTextColumn>
+                            <DataGridTextColumn Width="Auto" Header="Type" Binding="{Binding Type}"></DataGridTextColumn>
+                            <DataGridTextColumn Width="Auto" Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+                            <DataGridTextColumn Width="*" Header="Information" Binding="{Binding Information}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style>
+                                        <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </TabItem>
             </TabControl>
         </Grid>

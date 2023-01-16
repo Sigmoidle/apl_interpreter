@@ -8,6 +8,10 @@
         <RootNamespace>apl_compiler_ui</RootNamespace>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath />
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\apl_interpreter\apl_interpreter.fsproj" />
     </ItemGroup>

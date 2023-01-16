@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -26,7 +24,8 @@ public partial class MainWindow
     // list of apl symbols to stick in the toolbar
     private readonly string[] _symbols =
     {
-        "+", "-", "×", "÷", "?", "~", "⍳", "⍋", "⍒", "≢", "…", "⊇", "/", "←", "⍝"
+        "+", "-", "×", "÷", "?", "~", "⍳", "⍋", "⍒", "≢", "…", "⊇", "←", "⍝", "∧", "∨", "⍲", "⍱", "≤",
+        "≥", "≠", "|"
     };
 
     public MainWindow()
@@ -34,6 +33,8 @@ public partial class MainWindow
         InitializeComponent();
 
         SetWindowName();
+
+        PopulateHelpTable();
 
         foreach (var symbol in _symbols)
         {
@@ -47,6 +48,19 @@ public partial class MainWindow
 
             SymbolToolbar.Items.Add(btn);
         }
+    }
+
+    public struct Help
+    {
+        public string Symbol { set; get; }
+        public string Type { set; get; }
+        public string Name { set; get; }
+        public string Information { set; get; }
+    }
+
+    private void PopulateHelpTable()
+    {
+        HelpTable.Items.Add(new Help { Symbol = "+", Type = "Dyadic", Name = "Add", Information = "Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo Foo " });
     }
 
     private void SetWindowName()
@@ -145,6 +159,10 @@ public partial class MainWindow
             return;
         }
 
+
+        SyntaxTree.Document.Blocks.Clear();
+        SyntaxTree.Document.Blocks.Add(new Paragraph(new Run(main.getParseTreeAsString(code))));
+
         Symbols.RuntimeData symbols;
 
         try
@@ -157,7 +175,7 @@ public partial class MainWindow
             return;
         }
 
-        Tuple<Symbols.RuntimeData, FSharpList<Double>> output;
+        Tuple<Symbols.RuntimeData, FSharpList<double>> output;
 
         try
         {
@@ -169,12 +187,13 @@ public partial class MainWindow
             AddOutput(" < " + ex.Message, Brushes.Red);
             return;
         }
-        
+
         var symbolTableSource = new List<SymbolTableEntry>();
 
         foreach (var entry in output.Item1._symbolTable)
         {
-            symbolTableSource.Add(new SymbolTableEntry() { Identifier = entry.Key, Value = string.Join(",", entry.Value) });
+            symbolTableSource.Add(new SymbolTableEntry()
+                { Identifier = entry.Key, Value = string.Join(",", entry.Value) });
         }
 
         SymbolTable.ItemsSource = symbolTableSource;
