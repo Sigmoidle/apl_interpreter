@@ -60,6 +60,7 @@ and MonadicFn =
     | GradeUp of Expression
     | GradeDown of Expression
     | Magnitude of Expression
+    | Ceiling of Expression
     | Exponential of Expression
     | Floor of Expression
 
@@ -83,6 +84,7 @@ and DyadicFn =
     | NotEqual of Expression * Expression
     | Modulus of Expression * Expression
     | Catenate of Expression * Expression
+    | Maximum of Expression * Expression
     | Power of Expression * Expression
     | Minimum of Expression * Expression
 
@@ -109,6 +111,7 @@ let dyadicFunctionTokenList =
       Token.GreaterThan
       Token.NotEqual
       Token.VerticalBar
+      Token.LeftCeiling ]
       Token.Asterisk ]
       Token.LeftFloor
       Token.Comma ]
@@ -287,6 +290,9 @@ let parse tokens =
         | Token.Comma :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Catenate(expression1, expression2))
+        | Token.LeftCeiling :: tail ->
+            let newTokens, expression2 = _Expression tail
+            (newTokens, DyadicFn.Maximum(expression1,expression2))
         | Token.Asterisk :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Power(expression1, expression2))
@@ -340,6 +346,9 @@ let parse tokens =
         | Token.VerticalBar :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Magnitude(expression))
+        | Token.LeftCeiling :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Ceiling(expression))
         | Token.Asterisk :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Exponential(expression))
