@@ -192,6 +192,8 @@ let private _Range (list1: float list, list2: float list) =
 
 let private _Catenate (list1: float list, list2: float list) = list1 @ list2
 
+let private _Floor (list: float list) = List.map floor list
+
 let private _GradeUp (list: float list) =
     match list with
     | [] -> raise <| runtimeError $"The array: %A{list} is empty and the Negate operation requires numbers (-)"
@@ -338,6 +340,7 @@ let runtime data =
         | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
         | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
         | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
+        | Floor expression -> _Expression (expression, symbolTable, out) |> snd |> _Floor
         | Magnitude expression -> _Expression (expression, symbolTable, out) |> snd |> _Magnitude
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
