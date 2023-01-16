@@ -13,7 +13,7 @@ type Token =
     | Hyphen // - Dyadic, returns the result of subtracting 2 arguments | Monadic, changes the sign of the argument
     | Multiplication // × Dyadic, returns the result of multiplying 2 arguments | Monadic, returns the sign on the argument. -1 if A<0, 0 if A=0, 1 if A>0
     | Division // ÷ Dyadic, returns the result of dividing 2 arguments | Monadic, returns the reciprical of the argument
-    | Tally // ≢ Monadic, returns the length of a numeric vector or string. 
+    | Tally // ≢ Monadic, returns the length of a numeric vector or string.
     | Select // ⊇ Dyadic, returns multiple items from its right argument using a vector of indicies as the left argument
     | LeftCeiling // ⌈
     | LeftFloor // ⌊
