@@ -50,7 +50,7 @@ type Token =
     //| CircleStile // ⌽
     //| CircledMinus // ⊖
     //| CircleBackslash // ⍉
-    //| SmallElementOf // ∊
+    | SmallElementOf // ∊
     //| Decode // ⊥
     //| Encode // ⊤
     //| FullStop // .
@@ -128,6 +128,7 @@ let rec private makeTokens tokenList characters =
     | '≠' :: tail -> makeTokens (NotEqual :: tokenList) tail
     | '|' :: tail -> makeTokens (VerticalBar :: tokenList) tail
     | ',' :: tail -> makeTokens (Comma :: tokenList) tail
+    | '∊' :: tail -> makeTokens (SmallElementOf :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)
