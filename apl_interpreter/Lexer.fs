@@ -15,7 +15,7 @@ type Token =
     | Division // ÷ Dyadic, returns the result of dividing 2 arguments | Monadic, returns the reciprical of the argument
     | Tally // ≢ Monadic, returns the length of a numeric vector or string. 
     | Select // ⊇ Dyadic, returns multiple items from its right argument using a vector of indicies as the left argument
-    //| LeftCeiling // ⌈
+    | LeftCeiling // ⌈
     //| LeftFloor // ⌊
     //| Asterisk // *
     //| CircleStar // ⍟
@@ -128,6 +128,7 @@ let rec private makeTokens tokenList characters =
     | '≠' :: tail -> makeTokens (NotEqual :: tokenList) tail
     | '|' :: tail -> makeTokens (VerticalBar :: tokenList) tail
     | ',' :: tail -> makeTokens (Comma :: tokenList) tail
+    | '⌈' :: tail -> makeTokens (LeftCeiling :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)

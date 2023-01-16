@@ -183,6 +183,8 @@ let private _Modulus (list1: float list, list2: float list) =
         raise
         <| runtimeError $"Either the Array: %A{list1} is not a scalar or the Array: %A{list2} is not a scalar or vector. Modulus(|) requires these."
 
+let private _Ceiling (list: float list) = List.map (fun (x: float) -> ceil x) list
+
 let private _Range (list1: float list, list2: float list) =
     match list1.Length, list2.Length with
     | 1, 1 when list1.Head >= 0.0 && (list1.Head + 1.0) < list2.Head -> [ Convert.ToDouble(Convert.ToInt32 list1.Head) .. (Convert.ToInt32 list2.Head) ]
@@ -338,6 +340,7 @@ let runtime data =
         | IndexGenerator expression -> _Expression (expression, symbolTable, out) |> snd |> _IndexGenerator
         | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
         | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
+        | Ceiling expression -> _Expression (expression, symbolTable, out) |> snd |> _Ceiling
         | Magnitude expression -> _Expression (expression, symbolTable, out) |> snd |> _Magnitude
 
     and _DyadicFn (dyadicFn, symbolTable, out) =

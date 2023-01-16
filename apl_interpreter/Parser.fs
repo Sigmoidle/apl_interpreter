@@ -60,6 +60,7 @@ and MonadicFn =
     | GradeUp of Expression
     | GradeDown of Expression
     | Magnitude of Expression
+    | Ceiling of Expression
 
 and DyadicFn =
     | Add of Expression * Expression
@@ -328,6 +329,9 @@ let parse tokens =
         | Token.VerticalBar :: tail ->
             let newTokens, expression = _Expression tail
             (newTokens, MonadicFn.Magnitude(expression))
+        | Token.LeftCeiling :: tail ->
+            let newTokens, expression = _Expression tail
+            (newTokens, MonadicFn.Ceiling(expression))
         | token :: _ -> raise <| parseError $"%A{token} is not a recognised monadic function"
         | _ -> raise <| parseError "Empty token list when processing monadic function"
 
