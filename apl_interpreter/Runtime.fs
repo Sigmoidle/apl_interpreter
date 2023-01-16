@@ -214,6 +214,8 @@ let private _GradeDown (list: float list) =
         |> Array.map (fun (_, t: int) -> Convert.ToDouble t)
         |> Seq.toList
 
+let private _Exponential (list: float list) = List.map (fun x -> Math.Exp x) list
+
 let private _BooleanOperation (operationType: DyadicFn) (list1: float list, list2: float list) =
     if list1.Length <> 1 || list2.Length <> 1 then
         raise
@@ -339,6 +341,7 @@ let runtime data =
         | GradeUp expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeUp
         | GradeDown expression -> _Expression (expression, symbolTable, out) |> snd |> _GradeDown
         | Magnitude expression -> _Expression (expression, symbolTable, out) |> snd |> _Magnitude
+        | Exponential expression -> _Expression (expression, symbolTable, out) |> snd |> _Exponential
 
     and _DyadicFn (dyadicFn, symbolTable, out) =
         match dyadicFn with

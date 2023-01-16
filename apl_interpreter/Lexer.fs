@@ -17,7 +17,7 @@ type Token =
     | Select // ⊇ Dyadic, returns multiple items from its right argument using a vector of indicies as the left argument
     //| LeftCeiling // ⌈
     //| LeftFloor // ⌊
-    //| Asterisk // *
+    | Asterisk // *
     //| CircleStar // ⍟
     | VerticalBar // | Dyadic, returns the remainder of the division of both arguments | Monadic, returns the absolute of the argument
     | QuestionMark // ? Dyadic, A?B, returns A distinct integers selected randomly from the first B integers | Monadic, ?B, returns 1 integer selected randomly from the first B integers
@@ -128,6 +128,7 @@ let rec private makeTokens tokenList characters =
     | '≠' :: tail -> makeTokens (NotEqual :: tokenList) tail
     | '|' :: tail -> makeTokens (VerticalBar :: tokenList) tail
     | ',' :: tail -> makeTokens (Comma :: tokenList) tail
+    | '*' :: tail -> makeTokens (Asterisk :: tokenList) tail
     // Identifiers
     | letter :: tail when isLetter letter ->
         let newRest, calculatedString = makeStringToken "" (letter :: tail)
