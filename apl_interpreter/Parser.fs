@@ -113,8 +113,8 @@ let dyadicFunctionTokenList =
       Token.NotEqual
       Token.VerticalBar
       Token.SmallElementOf
-      Token.LeftCeiling ]
-      Token.Asterisk ]
+      Token.LeftCeiling
+      Token.Asterisk
       Token.LeftFloor
       Token.Comma ]
 
@@ -297,7 +297,7 @@ let parse tokens =
             (newTokens, DyadicFn.Membership(expression1, expression2))
         | Token.LeftCeiling :: tail ->
             let newTokens, expression2 = _Expression tail
-            (newTokens, DyadicFn.Maximum(expression1,expression2))
+            (newTokens, DyadicFn.Maximum(expression1, expression2))
         | Token.Asterisk :: tail ->
             let newTokens, expression2 = _Expression tail
             (newTokens, DyadicFn.Power(expression1, expression2))

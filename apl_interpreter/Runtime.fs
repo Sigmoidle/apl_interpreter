@@ -159,10 +159,8 @@ let private _Negate (list: float list) =
 
 let private _Membership (list1: float list, list2: float list) =
     match list1, list2 with
-    | _, _ when list1.Length = 0 || list2.Length = 0 ->
-        raise <| runtimeError $"The arguments must have size larger than 0"
-    | _, _ ->
-        List.map (fun el -> if (List.contains el list2) then 1.0 else 0.0) list1
+    | _, _ when list1.Length = 0 || list2.Length = 0 -> raise <| runtimeError $"The arguments must have size larger than 0"
+    | _, _ -> List.map (fun el -> if (List.contains el list2) then 1.0 else 0.0) list1
 
 let private _Tally (list: float list) = [ Convert.ToDouble list.Length ]
 
@@ -197,11 +195,12 @@ let private _Maximum (list1: float list, list2: float list) =
     | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the maximum operation requires numbers"
     | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the maximum operation requires numbers"
     | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
-        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+        raise
+        <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
     | _, _ when list1.Length = 1 || list2.Length = 1 ->
         let maxVal = List.max (list1 @ list2)
         let maxLength = max list1.Length list2.Length
-        [for i in 0 .. maxLength-1 -> maxVal]
+        [ for _ in 0 .. maxLength - 1 -> maxVal ]
     | _, _ -> List.map2 max list1 list2
 
 
@@ -221,11 +220,12 @@ let private _Minimum (list1: float list, list2: float list) =
     | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the minimum operation requires numbers"
     | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the minimum operation requires numbers"
     | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
-        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+        raise
+        <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
     | _, _ when list1.Length = 1 || list2.Length = 1 ->
         let minVal = List.min (list1 @ list2)
         let maxLength = max list1.Length list2.Length
-        [for i in 0 .. maxLength-1 -> minVal]
+        [ for _ in 0 .. maxLength - 1 -> minVal ]
     | _, _ -> List.map2 min list1 list2
 
 let private _GradeUp (list: float list) =
@@ -257,10 +257,11 @@ let private _Power (list1: float list, list2: float list) =
     | 0, _ -> raise <| runtimeError $"The array %A{list1} is empty, the power operation requires numbers"
     | _, 0 -> raise <| runtimeError $"The array %A{list2} is empty, the power operation requires numbers"
     | _, _ when list1.Length <> list2.Length && list1.Length <> 1 && list2.Length <> 1 ->
-        raise <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
+        raise
+        <| runtimeError $"The array %A{list1} and %A{list2} must be of equal length unless either has only one value"
     | 1, _ -> List.map (fun x -> list1.Head ** x) list2
     | _, 1 -> List.map (fun x -> x ** list2.Head) list1
-    | _, _ -> List.map2 (fun x y-> x ** y) list1 list2
+    | _, _ -> List.map2 (fun x y -> x ** y) list1 list2
 
 let private _BooleanOperation (operationType: DyadicFn) (list1: float list, list2: float list) =
     if list1.Length <> 1 || list2.Length <> 1 then
