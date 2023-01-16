@@ -10,6 +10,8 @@ let public getTokens input = input |> lex
 
 let public getParseTree input = input |> lex |> parse
 
+let public getParseTreeAsString input = input |> lex |> parse |> sprintf "%A"
+
 let public getInitialSymbolTable input = (input |> lex |> parse |> createSymbols)._symbolTable
 
 let public getOutput input = input |> lex |> parse |> createSymbols |> runtime |> snd
