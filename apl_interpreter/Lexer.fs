@@ -5,46 +5,46 @@ open System.IO
 
 // All Apl tokens
 type Token =
-    | AddReduce // +/
-    | DivideReduce // ÷/
-    | MultiplyReduce // ×/
-    | SubtractReduce // -/
-    | Plus // +
-    | Hyphen // -
-    | Multiplication // ×
-    | Division // ÷
-    | Tally // ≢
-    | Select // ⊇
+    | AddReduce // +/ Gets the sum of the vector to the right
+    | DivideReduce // ÷/ Adds division between each element in the vector on the right to get a result
+    | MultiplyReduce // ×/ Gets the product of the vector to the right
+    | SubtractReduce // -/ Adds subtraction between each element in the vector on the right to get a result
+    | Plus // + Dyadic, returning the result of adding 2 arguments | Monadic, returns the complex congugate of the argument. Real numbers are returned unchanged
+    | Hyphen // - Dyadic, returns the result of subtracting 2 arguments | Monadic, changes the sign of the argument
+    | Multiplication // × Dyadic, returns the result of multiplying 2 arguments | Monadic, returns the sign on the argument. -1 if A<0, 0 if A=0, 1 if A>0
+    | Division // ÷ Dyadic, returns the result of dividing 2 arguments | Monadic, returns the reciprical of the argument
+    | Tally // ≢ Monadic, returns the length of a numeric vector or string. 
+    | Select // ⊇ Dyadic, returns multiple items from its right argument using a vector of indicies as the left argument
     //| LeftCeiling // ⌈
     //| LeftFloor // ⌊
     //| Asterisk // *
     //| CircleStar // ⍟
-    | VerticalBar // |
-    | QuestionMark // ?
+    | VerticalBar // | Dyadic, returns the remainder of the division of both arguments | Monadic, returns the absolute of the argument
+    | QuestionMark // ? Dyadic, A?B, returns A distinct integers selected randomly from the first B integers | Monadic, ?B, returns 1 integer selected randomly from the first B integers
     //| WhiteCircle // ○
     //| ExclamationMark // !
-    | Tilde // ~
-    | LogicalAnd // ∧
-    | LogicalOr // ∨
-    | LogicalNand // ⍲
-    | LogicalNor // ⍱
-    | LessThan // <
-    | LessOrEqual // ≤
-    | Equals // =
-    | GreaterOrEqual // ≥
-    | GreaterThan // >
-    | NotEqual // ≠
+    | Tilde // ~ Monadic, returns not of argument e.g ~1 = 0, ~0 = 1
+    | LogicalAnd // ∧ Dyadic, returns 1 (true) if both A and B = 1, 0 (false) otherwise
+    | LogicalOr // ∨ Dyadic, returns 1 (true) if A or B = 1, 0 (false) otherwise
+    | LogicalNand // ⍲ Dyadic, returns 0 if A and B = 1, 1 otherwise
+    | LogicalNor // ⍱ Dyadic, returns 1 if A and B = 0, 1 otherwise
+    | LessThan // < Dyadic, returns 1 if A is less than B, 0 otherwise
+    | LessOrEqual // ≤ Dyadic, returns 1 if A is less or equal to B, 0 otherwise
+    | Equals // = Dyadic, returns 1 if A is equal to B, 0 otherwise
+    | GreaterOrEqual // ≥ Dyadic, returns 1 if A is greater or equal to B, 0 otherwise
+    | GreaterThan // > Dyadic, returns 1 if A is greater than B, 0 otherwise
+    | NotEqual // ≠ Dyadic, returns 1 if A is not equal to B, 0 otherwise
     //| Rho // ⍴
-    | Comma // ,
+    | Comma // , Dyadic, returns the result of appending both arguments | Monadic, changes the arugment into a vector
     //| LeftSquareBracket // [
     //| RightSquareBracket // ]
-    | Iota // ⍳
-    | Range // …
+    | Iota // ⍳ Dyadic, A⍳B returns the index of B in A | Monadic, returns the vector of the first B integers
+    | Range // … Dyadic, returns a vector of consecutive integers based on the start and end values given by its arguments
     //| UpwardPointingArrow // ↑
     //| DownwardPointingArrow // ↓
-    | GradeUp // ⍋
-    | GradeDown // ⍒
-    | Slash // /
+    | GradeUp // ⍋ Monadic, returns the rearrangement of the argument in ascending order
+    | GradeDown // ⍒ Monadic, returns the rearrangement of the argument in descending order
+    | Slash // / Used with Dyadic operators to perform the operator on the entire vector, e.g Sum
     //| Backslash // \
     //| BackslashBar // ⍀
     //| CircleStile // ⌽
@@ -57,7 +57,7 @@ type Token =
     //| OuterProduct // ∘.
     | LeftBracket // (
     | RightBracket // )
-    | Assign // ←
+    | Assign // ← Dyadic, assigns the value on the right to the variable to the left
     // Misc
     | Comment // ⍝
     | NewLine // \n
